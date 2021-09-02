@@ -27,15 +27,18 @@ class serial_communication():
     
     def Write(self, data):
         if self.ser.isOpen():
-            self.ser.write((data + '\r\n').encode())
-            time.sleep(1)
+            print("written data: %s", data)
+            self.ser.write(data)
+            #time.sleep(0.01)
         return None
 
     def Read(self, size):
         if self.ser.isOpen():
             data = self.ser.read(size)
             self.ser.flushInput()
-            print (data)
             return data
-            
         return 999.999
+
+    def flusCache(self):
+        self.ser.flushInput()
+        self.ser.flushOutput()
