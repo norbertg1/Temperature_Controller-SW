@@ -21,14 +21,21 @@ class serial_communication():
         parity=serial.PARITY_NONE,
         stopbits=serial.STOPBITS_ONE,
         bytesize=serial.EIGHTBITS,
-        timeout=1
+        timeout=0.2
         )
         return self.ser.isOpen()
     
     def Write(self, data):
         if self.ser.isOpen():
-            print("written data: %s", data)
             self.ser.write(data)
+            time.sleep(0.1)
+            self.Write_unicode("SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS")
+            time.sleep(0.01)
+        return None
+
+    def Write_unicode(self, data):
+        if self.ser.isOpen():
+            self.ser.write(data.encode())
             #time.sleep(0.01)
         return None
 
@@ -39,6 +46,6 @@ class serial_communication():
             return data
         return 999.999
 
-    def flusCache(self):
+    def flushCache(self):
         self.ser.flushInput()
         self.ser.flushOutput()
