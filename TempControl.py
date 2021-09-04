@@ -1,24 +1,33 @@
+from graph import graphicon
 from typing import Text
 from tkinter import ttk
 import tkinter as tk
 from Settings import *
 from Communication import serial_communication
 import struct
-import crcmod
 import sys
+import test
+import matplotlib
+from matplotlib.animation import FuncAnimation
+
+matplotlib.use('TkAgg')
+
+
+
 
 window = tk.Tk()
- 
 window.title("Temperature Controller")
-window.minsize(600,400)
+window.minsize(600,600)
 serial_port = serial_communication()        #This is the constructor for serial_port class in Communication.py
-settings = Settings_(serial_port)
+settings    = Settings_(serial_port, window)
+graph       = graphicon(window)
 
 def SetTemp():
     SetTemp = int(float(SetTemp_var.get())*10)
+    graph.setTargetTempline(SetTemp/10)
     settings.data[0] = SetTemp
     settings.data[2] = 1                    #Set menu to start heating or cooling
-    settings.SendSettings()
+    settings.DeviceStatus.status(settings.SendSettings())
     return None
 
 def OpenSettings():
@@ -26,30 +35,36 @@ def OpenSettings():
     return None
 
 def ReadCurrentTemp():
-    measurements_raw = serial_port.Read(16)
+    measurements_raw = serial_port.Read(20)
     try:
-       measurements = struct.unpack('ffff', measurements_raw)
-       CurrentTemp_label.configure(text= str(round(measurements[0], 3)) + " ℃")
-       Voltage_label.configure(text= str(round(measurements[1], 3)) + " V")
-       Amps_label.configure(text= str(round(measurements[2], 3)) + " A")
-       Power_label.configure(text= str(round(measurements[3], 3)) + " W")
+        crc32 = crcmod.predefined.mkCrcFun('crc-32-mpeg')(measurements_raw[0:16])
+        measurements = struct.unpack('ffffI', measurements_raw)
+        if(crc32 == measurements[4]):
+            CurrentTemp_label.configure(text= str(round(measurements[0], 3)) + " ℃")
+            Voltage_label.configure(text= str(round(measurements[1], 3)) + " V")
+            Amps_label.configure(text= str(round(measurements[2], 3)) + " A")
+            Power_label.configure(text= str(round(measurements[3], 3)) + " W")
+            graph.updatexy(measurements[0])
     except:
         # I/O Error, add error handler
         CurrentTemp_label.configure(text= str(0.0) + " ℃")
+        graph.updatexy(0)
     window.after(200, ReadCurrentTemp)
     return None
 
 def OpenSerial():
     print("Selected Option: {}".format(value_inside.get()))
     if(serial_port.Open(value_inside.get())):
+        tkinter.Label(window, text = "Port OK,", font= ("default", "12", "bold"), fg="green").grid(column= 4, row = 0)
         if(settings.ReadSettings()):
             SetTemp_entry.delete(0, END)
             SetTemp_entry.insert(0, round(settings.data[0]/10,3))
-            tkinter.Label(window, text = "Port OK, Device OK", font= ("default", "12", "bold")).grid(column= 4, row = 0)
+            graph.setTargetTempline(settings.data[0]/10)
+            settings.DeviceStatus.status(True)
         else:
-            tkinter.Label(window, text = "Port Ok, Device Failed", font= ("default", "12", "bold")).grid(column= 4, row = 0)
+            settings.DeviceStatus.status(False)
     else:
-        tkinter.Label(window, text = "Port Failed", font= ("default", "12", "bold")).grid(column= 4, row = 0)
+        tkinter.Label(window, text = "Port Failed,", font= ("default", "12", "bold"), fg="red").grid(column= 4, row = 0)
     return None
 
 
@@ -78,12 +93,16 @@ devices = []
 for port in sorted(ports):
     devices.append(port.device)
 
+if not devices: devices.append("N/A")
+
 value_inside = tkinter.StringVar(window)
-ChooseSerialMenu = OptionMenu(window, value_inside ,*devices )
+ChooseSerialMenu = OptionMenu(window, value_inside, *devices )
 ChooseSerialMenu.grid(column= 0, row = 0)
 setSerialButton = tkinter.Button(window, text = "Open", command = OpenSerial)
 setSerialButton.grid(column= 1, row = 0)
 
 
+
+animation = FuncAnimation(graph.figure, graph.update, interval=200)
 window.after(300, ReadCurrentTemp)
 window.mainloop()
