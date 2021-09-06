@@ -10,7 +10,7 @@ import matplotlib
 from datetime import datetime
 import time
 
-nr_points = 50
+nr_points = 500
 
 matplotlib.use('TkAgg')
 
@@ -36,7 +36,6 @@ class graphicon():
         plot_widget = canvas.get_tk_widget()
         plot_widget.place(x = 0, y = 120)
         self.target_temp = 25
-        self.updatexy(0)
     
     def update(self, frame):
         if(len(self.x_data)>=nr_points):
@@ -54,32 +53,32 @@ class graphicon():
 
             #self.line2.set_data(self.x_data, self.y2_data)
         else:
-            self.x_data.append(self.x_temp)
-            self.y_data.append(self.y_temp)
-            self.x2_data.append(self.x_temp)   
-            self.y2_data.append(self.target_temp)
-            self.ylist = [self.y_data, self.y2_data]     
-            self.xlist = [self.x_data, self.x2_data]
-            for lnum,self.line in enumerate(self.lines):
-                self.line.set_data(self.xlist[lnum], self.ylist[lnum]) # set data for each line separately. 
-
+            try:
+                self.x_data.append(self.x_temp)
+                self.y_data.append(self.y_temp)
+                self.x2_data.append(self.x_temp)   
+                self.y2_data.append(self.target_temp)
+                self.ylist = [self.y_data, self.y2_data]     
+                self.xlist = [self.x_data, self.x2_data]
+                for lnum,self.line in enumerate(self.lines):
+                    self.line.set_data(self.xlist[lnum], self.ylist[lnum]) # set data for each line separately. 
+            except:
+                return None
             #self.line[0].set_data(self.xlist[0], self.ylist[0])
             #self.line[1].set_data(self.xlist[1], self.ylist[1])        
             #self.line2.set_data(self.x_data, self.y2_data)        
         self.figure.gca().relim()
-        self.figure.gca().autoscale_view()
+        self.figure.gca().autoscale()   
+        y = self.figure.gca().get_ylim()
+        if(abs(y[0]-y[1]) < 1):             #Limits the maximum autoscale
+            y_avg = (y[0]+y[1])/2
+            self.figure.gca().set_ylim(y_avg-2,y_avg+2)
         return self.lines
 
     def updatexy(self,y):
         self.x_temp = float(round(time.time() * 10)/10) - self.starttime
         self.y_temp = y
-        #if(len(self.x_data)<nr_points):
-            #self.x_data.append(float(round(time.time() * 10)/10) - self.starttime)
-            #self.y_data.append(y)
-        #else:
-            #self.x_data[nr_points-1] = float(round(time.time() * 10)/10) - self.starttime
-            #self.y_data[nr_points-1] = y
-
+        
     def init(self):
         for self.line in self.lines:
             self.line.set_data([],[])

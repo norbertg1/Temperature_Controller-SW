@@ -28,8 +28,8 @@ class serial_communication():
     def Write(self, data):
         if self.ser.isOpen():
             self.ser.write(data)
-            time.sleep(0.1)
-            self.Write_unicode("SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS")
+            #time.sleep(0.1)
+            #self.Write_unicode("SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS")
             time.sleep(0.01)
         return None
 

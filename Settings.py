@@ -68,7 +68,7 @@ class Settings_():
       self.OffsetTemp_entry.delete(0, END)
       self.OffsetTemp_entry.insert(0, self.data[1])
       self.Menu_entry.delete(0, END)
-      self.Menu_entry.insert(0, self.data[2])
+      self.Menu_entry.insert(0, self.data[2 ])
 
    def GetandSendSettings(self):
       self.data[0] = self.TargetTemp_var
@@ -83,6 +83,8 @@ class Settings_():
       settings_raw = struct.pack("iihhhiiiiiifffifI", *settings_tuple[0:16], crc32)
       print("Settings going to send:", settings_tuple)
       print("Settings going to send (raw):", settings_raw.hex())
+      self.serial_port.flushCache()
+      self.serial_port.Write(settings_raw)
       i=0
       while(1):
          try:
@@ -101,7 +103,7 @@ class Settings_():
 
             self.serial_port.flushCache()
             self.serial_port.Write(settings_raw)
-            time.sleep(0.005)
+            #time.sleep(0.005)
       time.sleep(0.5)
       self.serial_port.flushCache()
       print("Settings saved to device FAILED!")
