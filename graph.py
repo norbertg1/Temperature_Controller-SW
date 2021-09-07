@@ -18,6 +18,7 @@ class graphicon():
     def __init__(self, window):
         self.starttime = float(round(time.time() * 10)/10)
         print(self.starttime)
+        self.UpdatedFlag = False
         self.x_data = deque()
         self.x2_data = deque()
         self.y_data = deque()
@@ -54,16 +55,18 @@ class graphicon():
             #self.line2.set_data(self.x_data, self.y2_data)
         else:
             try:
-                self.x_data.append(self.x_temp)
-                self.y_data.append(self.y_temp)
-                self.x2_data.append(self.x_temp)   
-                self.y2_data.append(self.target_temp)
-                self.ylist = [self.y_data, self.y2_data]     
-                self.xlist = [self.x_data, self.x2_data]
-                for lnum,self.line in enumerate(self.lines):
-                    self.line.set_data(self.xlist[lnum], self.ylist[lnum]) # set data for each line separately. 
+                if self.UpdatedFlag is True:
+                    self.UpdatedFlag = False
+                    self.x_data.append(self.x_temp)
+                    self.y_data.append(self.y_temp)
+                    self.x2_data.append(self.x_temp)   
+                    self.y2_data.append(self.target_temp)
+                    self.ylist = [self.y_data, self.y2_data]     
+                    self.xlist = [self.x_data, self.x2_data]
+                    for lnum,self.line in enumerate(self.lines):
+                        self.line.set_data(self.xlist[lnum], self.ylist[lnum]) # set data for each line separately. 
             except:
-                return None
+                return None 
             #self.line[0].set_data(self.xlist[0], self.ylist[0])
             #self.line[1].set_data(self.xlist[1], self.ylist[1])        
             #self.line2.set_data(self.x_data, self.y2_data)        
@@ -76,6 +79,7 @@ class graphicon():
         return self.lines
 
     def updatexy(self,y):
+        self.UpdatedFlag = True
         self.x_temp = float(round(time.time() * 10)/10) - self.starttime
         self.y_temp = y
         

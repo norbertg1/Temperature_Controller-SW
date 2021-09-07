@@ -9,6 +9,7 @@ import sys
 import test
 import matplotlib
 from matplotlib.animation import FuncAnimation
+from tkinter import messagebox
 
 matplotlib.use('TkAgg')
 
@@ -25,9 +26,10 @@ graph       = graphicon(window)
 def SetTemp():
     SetTemp = int(float(SetTemp_var.get())*10)
     graph.setTargetTempline(SetTemp/10)
-    settings.data[0] = SetTemp
-    settings.data[2] = 1                    #Set menu to start heating or cooling
-    settings.DeviceStatus.status(settings.SendSettings())
+    settings.data[Settings_.TargetTemp] = SetTemp
+    settings.data[Settings_.MenuNumber] = 1                    #Set menu to start heating or cooling
+    if settings.SendSettings() is True: settings.DeviceStatus.status("Device OK", True)
+    else: settings.DeviceStatus.status("Device Error", False)
     return None
 
 def SetTemponEnter(event):
@@ -51,13 +53,14 @@ def ReadCurrentTemp():
                 Power_label.configure(text= str(round(measurements[3], 3)) + " W")
                 graph.updatexy(measurements[0])
                 animation.event_source.start()
-
+                #settings.DeviceStatus.status("Device OK", True)
         except:
             # I/O Error, add error handler
-            CurrentTemp_label.configure(text= str(0.0) + " ℃")
+            settings.DeviceStatus.status("Device Error", False)
+            #CurrentTemp_label.configure(text= str(0.0) + " ℃")
     except:
         SerialStatus(False)
-        settings.DeviceStatus.status(False)
+        settings.DeviceStatus.status("Device Error", False)
     window.after(200, ReadCurrentTemp)
     return None
 
@@ -67,21 +70,27 @@ def OpenSerial():
         SerialStatus(True)
         if(settings.ReadSettings()):
             SetTemp_entry.delete(0, END)
-            SetTemp_entry.insert(0, round(settings.data[0]/10,3))
-            graph.setTargetTempline(settings.data[0]/10)
-            settings.DeviceStatus.status(True)
+            SetTemp_entry.insert(0, round(settings.data[Settings_.TargetTemp]/10,3))
+            graph.setTargetTempline(settings.data[Settings_.TargetTemp]/10)
+            settings.DeviceStatus.status("Device OK", True)
         else:
-            settings.DeviceStatus.status(False)
+            settings.DeviceStatus.status("Device Error", False)
     else:
         SerialStatus(False)
     return None
 
 def SerialStatus(stat):
-    if stat is True:    Port_label.config(text = "Port OK", font= ("default", "12", "bold"), fg="green")
+    if stat is True:    Port_label.config(text = "Port OK,", font= ("default", "12", "bold"), fg="green")
     if stat is False:   Port_label.config(text = "Port Error", font= ("default", "12", "bold"), fg="red")
+
+def on_closing():
+    if messagebox.askokcancel("Quit", "Do you want to quit?"):
+        settings.__del__()
+        window.quit()
 
 Port_label = tkinter.Label(window)
 Port_label.grid(column= 4, row = 0)
+Port_label.config(text = "Port Error", font= ("default", "12", "bold"), fg="red")
 #tkinter.Label(window, text = "Port OK,", font= ("default", "12", "bold"), fg="green").grid(column= 4, row = 0)
 ttk.Label(window, text = "Target Temperature").grid(column = 0, row = 1)
 CurrentTemp_label   = ttk.Label(window, text = None, font= ("default", "24", "bold") )
@@ -123,4 +132,5 @@ animation = FuncAnimation(graph.figure, graph.update, interval=200)
 animation.event_source.stop()
 
 window.after(300, ReadCurrentTemp)
+window.protocol("WM_DELETE_WINDOW", on_closing)
 window.mainloop()
