@@ -17,7 +17,6 @@ matplotlib.use('TkAgg')
 class graphicon():
     def __init__(self, window):
         self.starttime = float(round(time.time() * 10)/10)
-        print(self.starttime)
         self.UpdatedFlag = False
         self.x_data = deque()
         self.x2_data = deque()

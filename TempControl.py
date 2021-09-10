@@ -10,11 +10,9 @@ import test
 import matplotlib
 from matplotlib.animation import FuncAnimation
 from tkinter import messagebox
+from collections import deque
 
 matplotlib.use('TkAgg')
-
-
-
 
 window = tk.Tk()
 window.title("Temperature Controller")
@@ -22,6 +20,23 @@ window.minsize(600,600)
 serial_port = serial_communication()        #This is the constructor for serial_port class in Communication.py
 settings    = Settings_(serial_port, window)
 graph       = graphicon(window)
+
+class AvgError_classs(): 
+    def __init__(self, defsamples):
+        self.current_value   = 0
+        self.avg_temp        = deque()
+        self.nr_points       = 0
+        self.nr_samples      = defsamples
+
+    def calculate(self, target, value):
+        error = abs(target-value)
+        if(len(self.avg_temp)>=self.nr_samples):
+            self.avg_temp.rotate(-1)
+            self.avg_temp[self.nr_points-1] = error
+            return sum(self.avg_temp)/self.nr_samples
+        else:
+            self.avg_temp.append(error)
+            return sum(self.avg_temp)/len(self.avg_temp)
 
 def SetTemp():
     SetTemp = int(float(SetTemp_var.get())*10)
@@ -53,9 +68,13 @@ def ReadCurrentTemp():
                 Power_label.configure(text= str(round(measurements[3], 3)) + " W")
                 graph.updatexy(measurements[0])
                 animation.event_source.start()
-                #settings.DeviceStatus.status("Device OK", True)
-        except:
+                try:
+                    AvgError_label.configure(text= "±" + str(round(AvgError.calculate(settings.data[settings.TargetTemp]/10, measurements[0]), 3))  + " ℃")
+                except:
+                    print()
+        except:# Exception as e: 
             # I/O Error, add error handler
+            #print(e)
             settings.DeviceStatus.status("Device Error", False)
             #CurrentTemp_label.configure(text= str(0.0) + " ℃")
     except:
@@ -88,6 +107,8 @@ def on_closing():
         settings.__del__()
         window.quit()
 
+
+AvgError   = AvgError_classs(500)
 Port_label = tkinter.Label(window)
 Port_label.grid(column= 4, row = 0)
 Port_label.config(text = "Port Error", font= ("default", "12", "bold"), fg="red")
@@ -98,12 +119,15 @@ PowerPercent_label  = ttk.Label(window, text = None, font= ("default", "16") )
 Voltage_label       = ttk.Label(window, text = None, font= ("default", "12"))
 Amps_label          = ttk.Label(window, text = None, font= ("default", "12"))
 Power_label         = ttk.Label(window, text = None, font= ("default", "12" ))
+AvgError_label      = ttk.Label(window, text = None, font= ("default", "12" ))
 
 CurrentTemp_label.place(x = 150, y = 40)
 PowerPercent_label.place(x = 180, y = 80 )
 Voltage_label.place(x = 360, y = 30)
 Amps_label.place(x = 360, y = 48)
 Power_label.place(x = 360, y = 66)
+AvgError_label.place(x = 360, y = 84)
+
 
 SetTemp_var     = tk.StringVar()
 SetTemp_entry   = ttk.Entry(window, width = 15, textvariable = SetTemp_var, justify='center')
