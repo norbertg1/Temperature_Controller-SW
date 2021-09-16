@@ -8,6 +8,8 @@ import crcmod
 
 class Settings_():
 
+   attempts    = 50
+
    CRC         = 0
    TargetTemp  = 1
    OffsetTemp  = 2
@@ -51,14 +53,14 @@ class Settings_():
       self.serial_port.flushCache()
       self.serial_port.Write_unicode("SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS")
       time.sleep(0.01)
-      settings_raw = self.serial_port.Read(68)
+      settings_raw = self.serial_port.Read(64)
       i=0
       while(1):       
          try:
             i+=1
             print("received raw data:", settings_raw.hex())  
-            crc32 = crcmod.predefined.mkCrcFun('crc-32-mpeg')(settings_raw[4:68])
-            self.data = struct.unpack('Iiihhhiiiiiifffiff', settings_raw)
+            crc32 = crcmod.predefined.mkCrcFun('crc-32-mpeg')(settings_raw[4:64])
+            self.data = struct.unpack('Iiihhhiiiiiifffif', settings_raw)
             self.data = list(self.data)
             print("received data:", self.data)
             if crc32 == self.data[self.CRC]:
@@ -66,11 +68,11 @@ class Settings_():
                return TRUE
             raise Exception()
          except:
-            if i>20: break
+            if i>self.attempts: break
             self.serial_port.flushCache()
             self.serial_port.Write_unicode("SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS")
             time.sleep(0.01)
-            settings_raw = self.serial_port.Read(68)  
+            settings_raw = self.serial_port.Read(64)  
             time.sleep(0.1)
       return FALSE
 
@@ -92,11 +94,12 @@ class Settings_():
    def SendSettings(self):
       try:
          settings_tuple = tuple(self.data)
-         settings_raw = struct.pack("iihhhiiiiiifffiff", *settings_tuple[1:18])
+         settings_raw = struct.pack("iihhhiiiiiifffif", *settings_tuple[1:17])
          crc32 = crcmod.predefined.mkCrcFun('crc-32-mpeg')(settings_raw)
-         settings_raw = struct.pack("Iiihhhiiiiiifffiff", crc32, *settings_tuple[1:18])
+         settings_raw = struct.pack("Iiihhhiiiiiifffif", crc32, *settings_tuple[1:17])
          print("Settings going to send:", settings_tuple)
          print("Settings going to send (raw):", settings_raw.hex())
+         print("Settings going CRC checksum:", crc32)
          if self.WritToDevice(settings_raw) is True:
             print("Settings saved to device OK!")
             return True
@@ -133,7 +136,7 @@ class Settings_():
       while(1):
          try:
             i+=1
-            if i>20: break
+            if i>self.attempts: break
             print("Tries:", i)
             self.serial_port.flushCache()
             raw = self.serial_port.Read(4)

@@ -29,13 +29,13 @@ class AvgError_classs():
         self.nr_samples      = defsamples
 
     def calculate(self, target, value):
-        error = abs(target-value)
+        rms_error = (target-value)**2
         if(len(self.avg_temp)>=self.nr_samples):
             self.avg_temp.rotate(-1)
-            self.avg_temp[self.nr_points-1] = error
+            self.avg_temp[self.nr_points-1] = rms_error
             return sum(self.avg_temp)/self.nr_samples
         else:
-            self.avg_temp.append(error)
+            self.avg_temp.append(rms_error)
             return sum(self.avg_temp)/len(self.avg_temp)
 
 def SetTemp():
@@ -69,7 +69,7 @@ def ReadCurrentTemp():
                 graph.updatexy(measurements[0])
                 animation.event_source.start()
                 try:
-                    AvgError_label.configure(text= "±" + str(round(AvgError.calculate(settings.data[settings.TargetTemp]/10, measurements[0]), 3))  + " ℃")
+                    AvgError_label.configure(text= "±" + str(round(AvgError.calculate(settings.data[settings.TargetTemp]/10, measurements[0]), 4))  + " ℃")
                 except:
                     print()
         except:# Exception as e: 

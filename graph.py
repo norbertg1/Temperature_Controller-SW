@@ -10,7 +10,7 @@ import matplotlib
 from datetime import datetime
 import time
 
-nr_points = 500
+nr_points = 1000
 
 matplotlib.use('TkAgg')
 
