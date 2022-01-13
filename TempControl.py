@@ -11,15 +11,17 @@ import matplotlib
 from matplotlib.animation import FuncAnimation
 from tkinter import messagebox
 from collections import deque
+from MeasureRange import*
 
 matplotlib.use('TkAgg')
 
 window = tk.Tk()
 window.title("Temperature Controller")
 window.minsize(600,600)
-serial_port = serial_communication()        #This is the constructor for serial_port class in Communication.py
-settings    = Settings_(serial_port, window)
-graph       = graphicon(window)
+serial_port     = serial_communication()        #This is the constructor for serial_port class in Communication.py
+settings        = Settings_(serial_port, window)
+graph           = graphicon(window)
+automatization  = MeasureRange()
 
 class AvgError_classs(): 
     def __init__(self, defsamples):
@@ -107,6 +109,8 @@ def on_closing():
         settings.__del__()
         window.quit()
 
+def OpenAutoWindow():
+    automatization.OpenMeasureRange()
 
 AvgError   = AvgError_classs(500)
 Port_label = tkinter.Label(window)
@@ -136,6 +140,8 @@ SetTemp_entry.bind("<KP_Enter>", SetTemponEnter)
 SetTemp_entry.grid(column = 0, row = 2)
 setTempButton   = ttk.Button(window, text = "SET", command = SetTemp)
 setTempButton.grid(column = 0, row = 3)
+AutoMeasure   = ttk.Button(window, text = "Mesure a range", command = OpenAutoWindow)
+AutoMeasure.grid(column= 6, row = 0)
 
 ttk.Button(window, text = "Options", command = OpenSettings).grid(column= 3, row = 0)
 
