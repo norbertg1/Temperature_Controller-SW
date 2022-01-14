@@ -163,7 +163,7 @@ class MeasureRange():
             self.CurrentTargetError = 1
             current_time = time.strftime("%H:%M:%S", time.localtime())
             if(abs(self.temp - self.CurrentTargetTemp) > self.MaxTempDifference): 
-                  self.currenterror_str = current_time + " " + str(self.CurrentTargetTemp) + "°C  " + str(self.temp) + "°C  Δ" + str(abs(self.temp - self.CurrentTargetTemp)) + "°C\n"
+                  self.currenterror_str = current_time + " " + str(self.CurrentTargetTemp) + "°C  " + str(round(self.temp,2)) + "°C  Δ" + str(round(abs(self.temp - self.CurrentTargetTemp),2)) + "°C\n"
                   self.MaxTempDifference = abs(self.temp - self.CurrentTargetTemp)
 
       def ShowErrorWindow(self):
