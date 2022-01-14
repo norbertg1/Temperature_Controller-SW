@@ -11,17 +11,19 @@ import matplotlib
 from matplotlib.animation import FuncAnimation
 from tkinter import messagebox
 from collections import deque
-import MeasureRange
+from MeasureRange import*
 
 matplotlib.use('TkAgg')
 
 window = tk.Tk()
 window.title("Temperature Controller")
 window.minsize(600,600)
+SetTemp_var     = tk.StringVar()
+SetTemp_entry   = ttk.Entry(window, width = 15, textvariable = SetTemp_var, justify='center')
 serial_port     = serial_communication()        #This is the constructor for serial_port class in Communication.py
 settings        = Settings_(serial_port, window)
 graph           = graphicon(window)
-automatization  = MeasureRange.MeasureRange()
+automatization  = MeasureRange(graph, settings, SetTemp_entry)
 
 class AvgError_classs(): 
     def __init__(self, defsamples):
@@ -133,8 +135,6 @@ Power_label.place(x = 360, y = 66)
 AvgError_label.place(x = 360, y = 84)
 
 
-SetTemp_var     = tk.StringVar()
-SetTemp_entry   = ttk.Entry(window, width = 15, textvariable = SetTemp_var, justify='center')
 SetTemp_entry.bind("<Return>", SetTemponEnter)
 SetTemp_entry.bind("<KP_Enter>", SetTemponEnter)
 SetTemp_entry.grid(column = 0, row = 2)
@@ -162,5 +162,6 @@ animation = FuncAnimation(graph.figure, graph.update, interval=200)
 animation.event_source.stop()
 
 window.after(300, ReadCurrentTemp)
+#window.after(1000,automatization.ongoing_measurement)
 window.protocol("WM_DELETE_WINDOW", on_closing)
 window.mainloop()
