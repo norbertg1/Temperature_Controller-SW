@@ -9,5 +9,5 @@ pip install crcmod
 sudo apt-get install python3-pil python3-pil.imagetk
 ``` 
 # Run 
-Run with command ``` python python3 TempControl.py ``` 
+Run with command ``` python3 TempControl.py ``` 
 There is a nice graphical intuitive interface with comments.

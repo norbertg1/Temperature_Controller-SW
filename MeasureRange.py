@@ -1,6 +1,8 @@
 from tkinter import *
 import tkinter
 
+
+
 class MeasureRange():
       def __init__(self):
             i=1
@@ -25,6 +27,7 @@ class MeasureRange():
             tkinter.Label(self.SettingsWindow, text = "Wait Before measurement").place(x = 170, y = 120)
             tkinter.Label(self.SettingsWindow, text = "Status:").place(x = 10, y = 220)
             self.status = tkinter.Label(self.SettingsWindow, text = "Not started", font= ("default", "12", "bold")).place(x = 70, y = 220)
+            self.time_remaining = tkinter.Label(self.SettingsWindow, text = "100 s", font= ("default", "12")).place(x = 250, y = 220)
             tkinter.Label(self.SettingsWindow, text = "°C").place(x =100, y = 70)
             tkinter.Label(self.SettingsWindow, text = "°C").place(x = 210, y = 70)
             tkinter.Label(self.SettingsWindow, text = "°C").place(x = 320, y = 70)
@@ -37,7 +40,16 @@ class MeasureRange():
             MeasureLengthEntry = tkinter.Entry(self.SettingsWindow, width = 10, textvariable = MeasurementLengthVar).place(x = 40, y = 140)
             WaitBeforeMeasurementEntry = tkinter.Entry(self.SettingsWindow, width = 10, textvariable = WaitBeforeMeasurementVar).place(x = 210, y = 140)
             StartButton   = tkinter.Button(self.SettingsWindow, text = "START", command = self.Start, width = 20).place(x = 20, y = 180)
-            StartButton   = tkinter.Button(self.SettingsWindow, text = "Next Step", command = self.Start, width = 10).place(x = 220, y = 180)
+            NextStepButton   = tkinter.Button(self.SettingsWindow, text = "Next Step", command = self.NextStep, width = 10).place(x = 220, y = 180)
 
       def Start(self):
+            from TempControl import SetTemp
+
+            #CurrentTemp_label.configure(text= " ℃")
+            print("sdfs")
+            SetTemp()
+            print("sdfssf")
+            
+      def NextStep(self):
             i=0
+            #SetTemp()

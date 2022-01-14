@@ -11,7 +11,7 @@ import matplotlib
 from matplotlib.animation import FuncAnimation
 from tkinter import messagebox
 from collections import deque
-from MeasureRange import*
+import MeasureRange
 
 matplotlib.use('TkAgg')
 
@@ -21,7 +21,7 @@ window.minsize(600,600)
 serial_port     = serial_communication()        #This is the constructor for serial_port class in Communication.py
 settings        = Settings_(serial_port, window)
 graph           = graphicon(window)
-automatization  = MeasureRange()
+automatization  = MeasureRange.MeasureRange()
 
 class AvgError_classs(): 
     def __init__(self, defsamples):
