@@ -1,3 +1,4 @@
+from os import fdatasync
 from graph import graphicon
 from typing import Text
 from tkinter import ttk
@@ -51,7 +52,7 @@ def SetTemp():
     else: settings.DeviceStatus.status("Device Error", False)
     return None
 
-def SetTemponEnter(event):
+def SetTempOnEnter(event):
     SetTemp()
 
 def OpenSettings():
@@ -71,6 +72,7 @@ def ReadCurrentTemp():
                 Amps_label.configure(text= str(round(measurements[2], 3)) + " A")
                 Power_label.configure(text= str(round(measurements[3], 3)) + " W")
                 graph.updatexy(measurements[0])
+                automatization.UpdateTemp(measurements[0])
                 animation.event_source.start()
                 try:
                     AvgError_label.configure(text= "±" + str(round(AvgError.calculate(settings.data[settings.TargetTemp]/10, measurements[0]), 4))  + " ℃")
@@ -135,8 +137,8 @@ Power_label.place(x = 360, y = 66)
 AvgError_label.place(x = 360, y = 84)
 
 
-SetTemp_entry.bind("<Return>", SetTemponEnter)
-SetTemp_entry.bind("<KP_Enter>", SetTemponEnter)
+SetTemp_entry.bind("<Return>", SetTempOnEnter)
+SetTemp_entry.bind("<KP_Enter>", SetTempOnEnter)
 SetTemp_entry.grid(column = 0, row = 2)
 setTempButton   = ttk.Button(window, text = "SET", command = SetTemp)
 setTempButton.grid(column = 0, row = 3)

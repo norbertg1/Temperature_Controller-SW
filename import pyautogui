@@ -1,0 +1,9 @@
+from os import fdatasync
+import pyautogui
+
+print(pyautogui.position())
+location = pyautogui.locateOnScreen('start.png')
+print(location)
+print(location.left)
+pyautogui.moveTo(300, 300, 3)
+pyautogui.click()
