@@ -46,7 +46,8 @@ class Settings_():
       self.SettingsWindow = tkinter.Tk()
       self.SettingsWindow.title("Settings")
       self.SettingsWindow.minsize(300,200)
-
+      self.SettingsWindow.resizable(False, False)
+      
       tkinter.Button(self.SettingsWindow, text = "Read Settings", command = self.ReadSettings).grid(column= 0, row = 0)
       tkinter.Button(self.SettingsWindow, text = "Write Settings", command = self.GetandSendSettings).grid(column= 1, row = 0)
       tkinter.Button(self.SettingsWindow, text = "Reset Device", command = self.ResetDevice).grid(column= 2, row = 0)

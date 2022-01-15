@@ -23,41 +23,42 @@ class MeasureRange():
             self.error_str          = ""
             
       def OpenMeasureRange(self):
-            self.SettingsWindow = Toplevel()
-            self.SettingsWindow.title("MeasureRange")
-            self.SettingsWindow.minsize(350,250)
-            FileStringVar = tkinter.StringVar(self.SettingsWindow,value='default text')
-            StartTempVar = tkinter.StringVar(self.SettingsWindow,value='20')
-            StepSizeVar = tkinter.StringVar(self.SettingsWindow,value='25')
-            EndTempVar = tkinter.StringVar(self.SettingsWindow,value='100')
-            MeasurementLengthVar = tkinter.StringVar(self.SettingsWindow,value='0.1')
-            WaitBeforeMeasurementVar = tkinter.StringVar(self.SettingsWindow,value='0.1')
+            self.MeasureRangeWindow = Toplevel()
+            self.MeasureRangeWindow.title("MeasureRange")
+            self.MeasureRangeWindow.minsize(350,250)
+            self.MeasureRangeWindow.resizable(False, False)
+            FileStringVar = tkinter.StringVar(self.MeasureRangeWindow,value='default text')
+            StartTempVar = tkinter.StringVar(self.MeasureRangeWindow,value='20')
+            StepSizeVar = tkinter.StringVar(self.MeasureRangeWindow,value='25')
+            EndTempVar = tkinter.StringVar(self.MeasureRangeWindow,value='100')
+            MeasurementLengthVar = tkinter.StringVar(self.MeasureRangeWindow,value='0.1')
+            WaitBeforeMeasurementVar = tkinter.StringVar(self.MeasureRangeWindow,value='0.1')
             self.ControlIVMasterVar = tkinter.IntVar(value=1)
             
-            self.status = tkinter.Label(self.SettingsWindow, text = "Not started", font= ("default", "10", "bold"))
-            self.time_remaining = tkinter.Label(self.SettingsWindow, text = "", font= ("default", "10"))
-            self.FileStringEntry = tkinter.Entry(self.SettingsWindow, width = 20, textvariable = FileStringVar)
-            self.StartTempEntry = tkinter.Entry(self.SettingsWindow, width = 10, textvariable = StartTempVar)
-            self.StepEntry = tkinter.Entry(self.SettingsWindow, width = 10, textvariable = StepSizeVar)
-            self.EndTemptEntry = tkinter.Entry(self.SettingsWindow, width = 10, textvariable = EndTempVar)
-            self.MeasureLengthEntry = tkinter.Entry(self.SettingsWindow, width = 10, textvariable = MeasurementLengthVar)
-            self.WaitBeforeMeasurementEntry = tkinter.Entry(self.SettingsWindow, width = 10, textvariable = WaitBeforeMeasurementVar)
-            self.StartStopButton   = tkinter.Button(self.SettingsWindow, text = "START", command = self.Start, width = 20)
-            self.ControlIVMasterButton = tkinter.Checkbutton(self.SettingsWindow, variable=self.ControlIVMasterVar,text="Control IVMaster")
+            self.status = tkinter.Label(self.MeasureRangeWindow, text = "Not started", font= ("default", "10", "bold"))
+            self.time_remaining = tkinter.Label(self.MeasureRangeWindow, text = "", font= ("default", "10"))
+            self.FileStringEntry = tkinter.Entry(self.MeasureRangeWindow, width = 20, textvariable = FileStringVar)
+            self.StartTempEntry = tkinter.Entry(self.MeasureRangeWindow, width = 10, textvariable = StartTempVar)
+            self.StepEntry = tkinter.Entry(self.MeasureRangeWindow, width = 10, textvariable = StepSizeVar)
+            self.EndTemptEntry = tkinter.Entry(self.MeasureRangeWindow, width = 10, textvariable = EndTempVar)
+            self.MeasureLengthEntry = tkinter.Entry(self.MeasureRangeWindow, width = 10, textvariable = MeasurementLengthVar)
+            self.WaitBeforeMeasurementEntry = tkinter.Entry(self.MeasureRangeWindow, width = 10, textvariable = WaitBeforeMeasurementVar)
+            self.StartStopButton   = tkinter.Button(self.MeasureRangeWindow, text = "START", command = self.Start, width = 20)
+            self.ControlIVMasterButton = tkinter.Checkbutton(self.MeasureRangeWindow, variable=self.ControlIVMasterVar,text="Control IVMaster")
             
-            tkinter.Label(self.SettingsWindow, text = "Name of the file").place(x = 10, y = 0)
-            tkinter.Label(self.SettingsWindow, text = "Start Temp.").place(x = 10, y = 50)
-            tkinter.Label(self.SettingsWindow, text = "Step size").place(x = 130, y = 50)
-            tkinter.Label(self.SettingsWindow, text = "End Temp.").place(x = 230, y = 50)
-            tkinter.Label(self.SettingsWindow, text = "Measurement Length").place(x = 10, y = 120)
-            tkinter.Label(self.SettingsWindow, text = "Wait Before measurement").place(x = 170, y = 120)
-            tkinter.Label(self.SettingsWindow, text = "Status:").place(x = 10, y = 220)
-            tkinter.Label(self.SettingsWindow, text = "°C").place(x =100, y = 70)
-            tkinter.Label(self.SettingsWindow, text = "°C").place(x = 210, y = 70)
-            tkinter.Label(self.SettingsWindow, text = "°C").place(x = 320, y = 70)
-            tkinter.Label(self.SettingsWindow, text = "min.").place(x = 130, y = 140)
-            tkinter.Label(self.SettingsWindow, text = "min.").place(x = 300, y = 140)
-            tkinter.Button(self.SettingsWindow, text = "Next Step", command = self.NextStep, width = 10).place(x = 220, y = 180)
+            tkinter.Label(self.MeasureRangeWindow, text = "Name of the file").place(x = 10, y = 0)
+            tkinter.Label(self.MeasureRangeWindow, text = "Start Temp.").place(x = 10, y = 50)
+            tkinter.Label(self.MeasureRangeWindow, text = "Step size").place(x = 130, y = 50)
+            tkinter.Label(self.MeasureRangeWindow, text = "End Temp.").place(x = 230, y = 50)
+            tkinter.Label(self.MeasureRangeWindow, text = "Measurement Length").place(x = 10, y = 120)
+            tkinter.Label(self.MeasureRangeWindow, text = "Wait Before measurement").place(x = 170, y = 120)
+            tkinter.Label(self.MeasureRangeWindow, text = "Status:").place(x = 10, y = 220)
+            tkinter.Label(self.MeasureRangeWindow, text = "°C").place(x =100, y = 70)
+            tkinter.Label(self.MeasureRangeWindow, text = "°C").place(x = 210, y = 70)
+            tkinter.Label(self.MeasureRangeWindow, text = "°C").place(x = 320, y = 70)
+            tkinter.Label(self.MeasureRangeWindow, text = "min.").place(x = 130, y = 140)
+            tkinter.Label(self.MeasureRangeWindow, text = "min.").place(x = 300, y = 140)
+            tkinter.Button(self.MeasureRangeWindow, text = "Next Step", command = self.NextStep, width = 10).place(x = 220, y = 180)
             
             self.ControlIVMasterButton.place(x = 170, y = 20)
             self.status.place(x = 60, y = 220)
@@ -92,7 +93,7 @@ class MeasureRange():
             if self.stage == -1:    
                   self.stage = 0
                   self.StartStopButton.config(text = "STOP")
-                  self.SettingsWindow.after(1000,self.ongoing_measurement)
+                  self.MeasureRangeWindow.after(1000,self.ongoing_measurement)
             else: 
                   self.stage = -1
                   self.StartStopButton.config(text = "START")
@@ -111,7 +112,7 @@ class MeasureRange():
                         self.cnt = 0
                         self.stage = 2
                   self.cnt += 1
-                  self.SettingsWindow.after(1000,self.ongoing_measurement)
+                  self.MeasureRangeWindow.after(1000,self.ongoing_measurement)
                   return
             if self.stage == 2: #Waiting for measuring.
                   self.TargetTempError()
@@ -120,10 +121,10 @@ class MeasureRange():
                   if self.cnt >= self.MeasurementLength*60:
                         self.cnt = 0
                         self.stage = 3
-                        self.SettingsWindow.after(10,self.ongoing_measurement)
+                        self.MeasureRangeWindow.after(10,self.ongoing_measurement)
                         return
                   self.cnt += 1
-                  self.SettingsWindow.after(1000,self.ongoing_measurement)
+                  self.MeasureRangeWindow.after(1000,self.ongoing_measurement)
                   return
             if self.stage == 3: #Finished, moving to next temperature or finishing
                   if self.CurrentTargetError == 1: self.error_str += self.currenterror_str
@@ -141,7 +142,7 @@ class MeasureRange():
                   if self.CurrentTargetTemp > self.EndTemp:
                         self.CurrentTargetTemp = self.EndTemp
                         self.stage = 0
-                  self.SettingsWindow.after(1000,self.ongoing_measurement)
+                  self.MeasureRangeWindow.after(1000,self.ongoing_measurement)
       
       
       def CheckIVMasterCheckBox(self):

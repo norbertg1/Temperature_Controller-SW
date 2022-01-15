@@ -19,6 +19,7 @@ matplotlib.use('TkAgg')
 window = tk.Tk()
 window.title("Temperature Controller")
 window.minsize(600,600)
+window.resizable(False, False)
 SetTemp_var     = tk.StringVar()
 SetTemp_entry   = ttk.Entry(window, width = 15, textvariable = SetTemp_var, justify='center')
 serial_port     = serial_communication()        #This is the constructor for serial_port class in Communication.py
@@ -145,7 +146,7 @@ setTempButton.grid(column = 0, row = 3)
 AutoMeasure   = ttk.Button(window, text = "Mesure a range", command = OpenAutoWindow)
 AutoMeasure.grid(column= 6, row = 0)
 
-ttk.Button(window, text = "Options", command = OpenSettings).grid(column= 3, row = 0)
+ttk.Button(window, text = "Settings", command = OpenSettings).grid(column= 3, row = 0)
 
 ports = serial.tools.list_ports.comports()
 devices = []
