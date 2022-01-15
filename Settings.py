@@ -230,7 +230,7 @@ class DeviceStat():
    def __init__(self, window):
       self.CurrentStatus = False
       self.DeviceStatus_label = tkinter.Label(window)
-      self.DeviceStatus_label.grid(column= 5, row = 0)
+      self.DeviceStatus_label.grid(column= 6, row = 0)
 
    def status(self, message, stat):
       self.CurrentStatus = stat

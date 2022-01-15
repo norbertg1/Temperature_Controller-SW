@@ -18,8 +18,7 @@ matplotlib.use('TkAgg')
 
 window = tk.Tk()
 window.title("Temperature Controller")
-window.minsize(600,600)
-window.resizable(False, False)
+window.minsize(630,600)
 SetTemp_var     = tk.StringVar()
 SetTemp_entry   = ttk.Entry(window, width = 15, textvariable = SetTemp_var, justify='center')
 serial_port     = serial_communication()        #This is the constructor for serial_port class in Communication.py
@@ -119,7 +118,7 @@ def OpenAutoWindow():
 
 AvgError   = AvgError_classs(500)
 Port_label = tkinter.Label(window)
-Port_label.grid(column= 4, row = 0)
+Port_label.grid(column= 5, row = 0)
 Port_label.config(text = "Port Error", font= ("default", "12", "bold"), fg="red")
 #tkinter.Label(window, text = "Port OK,", font= ("default", "12", "bold"), fg="green").grid(column= 4, row = 0)
 ttk.Label(window, text = "Target Temperature").grid(column = 0, row = 1)
@@ -142,9 +141,9 @@ SetTemp_entry.bind("<Return>", SetTempOnEnter)
 SetTemp_entry.bind("<KP_Enter>", SetTempOnEnter)
 SetTemp_entry.grid(column = 0, row = 2)
 setTempButton   = ttk.Button(window, text = "SET", command = SetTemp)
-setTempButton.grid(column = 0, row = 3)
+setTempButton.place(x = 20, y = 80)
 AutoMeasure   = ttk.Button(window, text = "Mesure a range", command = OpenAutoWindow)
-AutoMeasure.grid(column= 6, row = 0)
+AutoMeasure.grid(column= 4, row = 0)
 
 ttk.Button(window, text = "Settings", command = OpenSettings).grid(column= 3, row = 0)
 
