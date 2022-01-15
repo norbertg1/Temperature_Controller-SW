@@ -14,3 +14,14 @@ sudo apt-get install scrot
 # Run 
 Run with command ``` python3 TempControl.py ``` 
 There is a nice graphical intuitive interface with comments.
+
+# Make an executable file for Windows
+
+You need a package: 
+
+```pip install pyinstaller```
+
+and run 
+
+```pyinstaller --onefile TempControl.py```
+
