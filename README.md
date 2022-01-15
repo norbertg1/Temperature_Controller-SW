@@ -7,6 +7,7 @@ pip install tk
 pip install pyserial
 pip install crcmod
 pip install pyautogui
+pip install opencv_python
 sudo apt-get install python3-pil python3-pil.imagetk
 sudo apt-get install scrot
 ``` 

@@ -100,10 +100,9 @@ class MeasureRange():
                   
       def ongoing_measurement(self):
             if self.stage == 0: #Setting up the target temperature.
-                  self.SetTemp(self.CurrentTargetTemp)
+                  #self.SetTemp(self.CurrentTargetTemp)
                   self.stage = 1
                   self.MaxTempDifference = 0
-                  self.CurrentTargetError = 0
             if self.stage == 1: #Waiting before measurement.
                   self.status.configure(text= "Waiting before measurement", fg= "black")
                   self.time_remaining.configure(text= str(int(self.WaitBeforeMeasurement*60) - self.cnt) + " s") 
@@ -127,7 +126,7 @@ class MeasureRange():
                   self.MeasureRangeWindow.after(1000,self.ongoing_measurement)
                   return
             if self.stage == 3: #Finished, moving to next temperature or finishing
-                  if self.CurrentTargetError == 1: self.error_str += self.currenterror_str
+                  self.error_str += self.currenterror_str
                   if self.CurrentTargetTemp == self.EndTemp: 
                         if(self.OverallError == 0): self.status.configure(text= "Finished", fg= "green")
                         else: self.status.configure(text= "Finished with errors", fg= "red")
@@ -156,8 +155,15 @@ class MeasureRange():
                   #pyautogui.moveTo(300, 300, 3)
                   #pyautogui.click()
                   #pyautogui.locateOnScreen('start.png')
-                  pyautogui.click('start.png')
-                  sleep(0.01)
+                  location = pyautogui.locateCenterOnScreen('start.png', grayscale=True, confidence=1)
+                  if location is None: 
+                        current_time = time.strftime("%H:%M:%S", time.localtime())
+                        self.error_str += current_time + " " + str(self.CurrentTargetTemp) + " IVMaster start button location is not found.\n"
+                        print ("IVMaster start button location is not found.")
+                        self.OverallError = 1
+                        return
+                  pyautogui.moveTo(location.x, location.y, 3)
+                  pyautogui.click()
                   pyautogui.write(self.FileStringEntry.get() + str(self.CurrentTargetTemp), interval=0.1)
                   pyautogui.press('Enter')
                   pyautogui.hotkey('alt', 'tab')
@@ -171,8 +177,7 @@ class MeasureRange():
             self.temp = temp
 
       def TargetTempError(self):
-            self.OverallError = 1
-            self.CurrentTargetError = 1
+            if self.MaxTempDifference > 5: self.OverallError = 1
             current_time = time.strftime("%H:%M:%S", time.localtime())
             if(abs(self.temp - self.CurrentTargetTemp) > self.MaxTempDifference): 
                   self.currenterror_str = current_time + " " + str(self.CurrentTargetTemp) + "°C  " + str(round(self.temp,2)) + "°C  Δ" + str(round(abs(self.temp - self.CurrentTargetTemp),2)) + "°C\n"

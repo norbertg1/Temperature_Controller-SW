@@ -1,4 +1,3 @@
-from os import fdatasync
 from graph import graphicon
 from typing import Text
 from tkinter import ttk
