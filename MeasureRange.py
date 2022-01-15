@@ -23,7 +23,7 @@ class MeasureRange():
             self.error_str          = ""
             
       def OpenMeasureRange(self):
-            self.SettingsWindow = tkinter.Tk()
+            self.SettingsWindow = Toplevel()
             self.SettingsWindow.title("MeasureRange")
             self.SettingsWindow.minsize(350,250)
             FileStringVar = tkinter.StringVar(self.SettingsWindow,value='default text')
@@ -32,6 +32,7 @@ class MeasureRange():
             EndTempVar = tkinter.StringVar(self.SettingsWindow,value='100')
             MeasurementLengthVar = tkinter.StringVar(self.SettingsWindow,value='0.1')
             WaitBeforeMeasurementVar = tkinter.StringVar(self.SettingsWindow,value='0.1')
+            self.ControlIVMasterVar = tkinter.IntVar(value=1)
             
             self.status = tkinter.Label(self.SettingsWindow, text = "Not started", font= ("default", "10", "bold"))
             self.time_remaining = tkinter.Label(self.SettingsWindow, text = "", font= ("default", "10"))
@@ -42,6 +43,7 @@ class MeasureRange():
             self.MeasureLengthEntry = tkinter.Entry(self.SettingsWindow, width = 10, textvariable = MeasurementLengthVar)
             self.WaitBeforeMeasurementEntry = tkinter.Entry(self.SettingsWindow, width = 10, textvariable = WaitBeforeMeasurementVar)
             self.StartStopButton   = tkinter.Button(self.SettingsWindow, text = "START", command = self.Start, width = 20)
+            self.ControlIVMasterButton = tkinter.Checkbutton(self.SettingsWindow, variable=self.ControlIVMasterVar,text="Control IVMaster")
             
             tkinter.Label(self.SettingsWindow, text = "Name of the file").place(x = 10, y = 0)
             tkinter.Label(self.SettingsWindow, text = "Start Temp.").place(x = 10, y = 50)
@@ -57,6 +59,7 @@ class MeasureRange():
             tkinter.Label(self.SettingsWindow, text = "min.").place(x = 300, y = 140)
             tkinter.Button(self.SettingsWindow, text = "Next Step", command = self.NextStep, width = 10).place(x = 220, y = 180)
             
+            self.ControlIVMasterButton.place(x = 170, y = 20)
             self.status.place(x = 60, y = 220)
             self.time_remaining.place(x = 290, y = 220)
             self.FileStringEntry.place(x = 10, y = 20)
@@ -111,12 +114,14 @@ class MeasureRange():
                   self.SettingsWindow.after(1000,self.ongoing_measurement)
                   return
             if self.stage == 2: #Waiting for measuring.
-                  if(abs(self.temp-self.CurrentTargetTemp) > 5): self.TargetTempError()
+                  self.TargetTempError()
                   self.status.configure(text= "Measuring")
                   self.time_remaining.configure(text= str(int(self.MeasurementLength*60) - self.cnt) + " s")
                   if self.cnt >= self.MeasurementLength*60:
                         self.cnt = 0
                         self.stage = 3
+                        self.SettingsWindow.after(10,self.ongoing_measurement)
+                        return
                   self.cnt += 1
                   self.SettingsWindow.after(1000,self.ongoing_measurement)
                   return
@@ -125,9 +130,10 @@ class MeasureRange():
                   if self.CurrentTargetTemp == self.EndTemp: 
                         if(self.OverallError == 0): self.status.configure(text= "Finished", fg= "green")
                         else: self.status.configure(text= "Finished with errors", fg= "red")
+                        self.StartStopButton.config(text = "START")
                         self.time_remaining.configure(text= "")
                         self.stage = -1
-                        if(self.OverallError == 1): self.ShowErrorWindow()
+                        self.ShowErrorWindow()
                         return
                   if self.CurrentTargetTemp < self.EndTemp: 
                         self.CurrentTargetTemp += self.Step
@@ -138,17 +144,22 @@ class MeasureRange():
                   self.SettingsWindow.after(1000,self.ongoing_measurement)
       
       
+      def CheckIVMasterCheckBox(self):
+            self.IVMasterControlFlag = self.ControlIVMasterVar.get()
+      
       def ConfigIVMASTER(self):
-            print("Range measurement. Configuring IVMASTER program")
-            #pyautogui.click(300, 300)
-            #pyautogui.moveTo(300, 300, 3)
-            #pyautogui.click()
-            #pyautogui.locateOnScreen('start.png')
-            #pyautogui.click('calc7key.png')
-            sleep(0.01)
-            #pyautogui.write(self.FileStringEntry.get() + str(self.CurrentTargetTemp), interval=0.1)
-            #pyautogui.press('Enter')
-            #pyautogui.hotkey('alt', 'tab')
+            self.CheckIVMasterCheckBox()
+            if self.IVMasterControlFlag == 1:
+                  print("Range measurement. Configuring IVMaster program")
+                  #pyautogui.click(300, 300)
+                  #pyautogui.moveTo(300, 300, 3)
+                  #pyautogui.click()
+                  #pyautogui.locateOnScreen('start.png')
+                  pyautogui.click('start.png')
+                  sleep(0.01)
+                  pyautogui.write(self.FileStringEntry.get() + str(self.CurrentTargetTemp), interval=0.1)
+                  pyautogui.press('Enter')
+                  pyautogui.hotkey('alt', 'tab')
             
       def NextStep(self):
             if self.stage > -1 and self.stage < 3: 
@@ -168,7 +179,7 @@ class MeasureRange():
 
       def ShowErrorWindow(self):
             ErrorWindow = tkinter.Tk()
-            ErrorWindow.title("Errors")
+            ErrorWindow.title("Summary and Errors")
             ErrorWindow.minsize(350,250)
             ErrorText = tkinter.Text(ErrorWindow, width = 60, height = 30)
             ErrorText.grid(column= 0, row = 0)
