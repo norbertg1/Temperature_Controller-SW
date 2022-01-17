@@ -116,8 +116,21 @@ def on_closing():
 def OpenAutoWindow():
     automatization.OpenMeasureRange()
 
+ports = serial.tools.list_ports.comports()
+devices = []
+for port in sorted(ports):
+    devices.append(port.device)
+
+if not devices: devices.append("N/A")
+
 AvgError   = AvgError_classs(500)
 Port_label = tkinter.Label(window)
+value_inside = tkinter.StringVar(window)
+ChooseSerialMenu = OptionMenu(window, value_inside, *devices )
+setSerialButton = tkinter.Button(window, text = "Open", command = OpenSerial)
+animation = FuncAnimation(graph.figure, graph.update, interval=200)
+ttk.Button(window, text = "Settings", command = OpenSettings).grid(column= 3, row = 0)
+
 Port_label.grid(column= 5, row = 0)
 Port_label.config(text = "Port Error", font= ("default", "12", "bold"), fg="red")
 #tkinter.Label(window, text = "Port OK,", font= ("default", "12", "bold"), fg="green").grid(column= 4, row = 0)
@@ -128,41 +141,25 @@ Voltage_label       = ttk.Label(window, text = None, font= ("default", "12"))
 Amps_label          = ttk.Label(window, text = None, font= ("default", "12"))
 Power_label         = ttk.Label(window, text = None, font= ("default", "12" ))
 AvgError_label      = ttk.Label(window, text = None, font= ("default", "12" ))
+setTempButton   = ttk.Button(window, text = "SET", command = SetTemp)
+AutoMeasure   = ttk.Button(window, text = "Mesure a range", command = OpenAutoWindow)
 
+SetTemp_entry.grid(column = 0, row = 2)
+AutoMeasure.grid(column= 4, row = 0)
+ChooseSerialMenu.grid(column= 0, row = 0)
+setSerialButton.grid(column= 1, row = 0)
 CurrentTemp_label.place(x = 150, y = 40)
 PowerPercent_label.place(x = 180, y = 80 )
 Voltage_label.place(x = 360, y = 30)
 Amps_label.place(x = 360, y = 48)
 Power_label.place(x = 360, y = 66)
 AvgError_label.place(x = 360, y = 84)
-
+setTempButton.place(x = 20, y = 80)
 
 SetTemp_entry.bind("<Return>", SetTempOnEnter)
 SetTemp_entry.bind("<KP_Enter>", SetTempOnEnter)
-SetTemp_entry.grid(column = 0, row = 2)
-setTempButton   = ttk.Button(window, text = "SET", command = SetTemp)
-setTempButton.place(x = 20, y = 80)
-AutoMeasure   = ttk.Button(window, text = "Mesure a range", command = OpenAutoWindow)
-AutoMeasure.grid(column= 4, row = 0)
 
-ttk.Button(window, text = "Settings", command = OpenSettings).grid(column= 3, row = 0)
-
-ports = serial.tools.list_ports.comports()
-devices = []
-for port in sorted(ports):
-    devices.append(port.device)
-
-if not devices: devices.append("N/A")
-
-value_inside = tkinter.StringVar(window)
-ChooseSerialMenu = OptionMenu(window, value_inside, *devices )
-ChooseSerialMenu.grid(column= 0, row = 0)
-setSerialButton = tkinter.Button(window, text = "Open", command = OpenSerial)
-setSerialButton.grid(column= 1, row = 0)
-
-animation = FuncAnimation(graph.figure, graph.update, interval=200)
 animation.event_source.stop()
-
 window.after(300, ReadCurrentTemp)
 #window.after(1000,automatization.ongoing_measurement)
 window.protocol("WM_DELETE_WINDOW", on_closing)
