@@ -90,6 +90,12 @@ class MeasureRange():
             self.MeasurementLength        = float(self.MeasureLengthEntry.get())
             self.WaitBeforeMeasurement    = float(self.WaitBeforeMeasurementEntry.get())
             self.cnt                      = 0
+            if self.CurrentTargetTemp > self.EndTemp and self.Step > 0:
+                  self.status.configure(text= "Range setting error", fg= "red")
+                  return
+            if self.CurrentTargetTemp < self.EndTemp and self.Step < 0:
+                  self.status.configure(text= "Range setting error", fg= "red")
+                  return
             if self.stage == -1:    
                   self.stage = 0
                   self.StartStopButton.config(text = "STOP")
@@ -100,7 +106,7 @@ class MeasureRange():
                   
       def ongoing_measurement(self):
             if self.stage == 0: #Setting up the target temperature.
-                  #self.SetTemp(self.CurrentTargetTemp)
+                  self.SetTemp(self.CurrentTargetTemp)
                   self.stage = 1
                   self.MaxTempDifference = 0
             if self.stage == 1: #Waiting before measurement.
@@ -135,10 +141,10 @@ class MeasureRange():
                         self.stage = -1
                         self.ShowErrorWindow()
                         return
-                  if self.CurrentTargetTemp < self.EndTemp: 
+                  if abs(self.CurrentTargetTemp) < abs(self.EndTemp): 
                         self.CurrentTargetTemp += self.Step
                         self.stage = 0
-                  if self.CurrentTargetTemp > self.EndTemp:
+                  if abs(self.CurrentTargetTemp) > abs(self.EndTemp):
                         self.CurrentTargetTemp = self.EndTemp
                         self.stage = 0
                   self.MeasureRangeWindow.after(1000,self.ongoing_measurement)
