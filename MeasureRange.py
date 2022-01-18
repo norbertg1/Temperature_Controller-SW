@@ -2,15 +2,15 @@ from cgitb import text
 from genericpath import exists
 from pyexpat import ErrorString
 from time import sleep
-from tkinter import *
 import tkinter
 from turtle import color
 from Settings import *
-from threading import Thread
-import threading
 import pyautogui
+from start_button_img import start_button_png
+import base64
+from io import BytesIO
+from PIL import Image, ImageQt
 
-#from TempControl import SetTemp as SetTempp
 
 class MeasureRange():
       def __init__(self, graph, settings, SetTemp_entry):
@@ -31,8 +31,8 @@ class MeasureRange():
             StartTempVar = tkinter.StringVar(self.MeasureRangeWindow,value='20')
             StepSizeVar = tkinter.StringVar(self.MeasureRangeWindow,value='25')
             EndTempVar = tkinter.StringVar(self.MeasureRangeWindow,value='100')
-            MeasurementLengthVar = tkinter.StringVar(self.MeasureRangeWindow,value='0.1')
-            WaitBeforeMeasurementVar = tkinter.StringVar(self.MeasureRangeWindow,value='0.1')
+            MeasurementLengthVar = tkinter.StringVar(self.MeasureRangeWindow,value='20')
+            WaitBeforeMeasurementVar = tkinter.StringVar(self.MeasureRangeWindow,value='20')
             self.ControlIVMasterVar = tkinter.IntVar(value=1)
             
             self.status = tkinter.Label(self.MeasureRangeWindow, text = "Not started", font= ("default", "10", "bold"))
@@ -152,16 +152,16 @@ class MeasureRange():
       
       def CheckIVMasterCheckBox(self):
             self.IVMasterControlFlag = self.ControlIVMasterVar.get()
-      
+     
       def ConfigIVMASTER(self):
             self.CheckIVMasterCheckBox()
             if self.IVMasterControlFlag == 1:
                   print("Range measurement. Configuring IVMaster program")
-                  #pyautogui.click(300, 300)
-                  #pyautogui.moveTo(300, 300, 3)
-                  #pyautogui.click()
-                  #pyautogui.locateOnScreen('start.png')
-                  location = pyautogui.locateCenterOnScreen('start.png', grayscale=True, confidence=1)
+                  byte_data = base64.b64decode(start_button_png)
+                  image_data = BytesIO(byte_data)
+                  image = Image.open(image_data)
+                  location = pyautogui.locateCenterOnScreen(image, grayscale=True, confidence=0.7)
+                  #location = pyautogui.locateCenterOnScreen("image.png", grayscale=True, confidence=0.7)
                   if location is None: 
                         current_time = time.strftime("%H:%M:%S", time.localtime())
                         self.error_str += current_time + " " + str(self.CurrentTargetTemp) + " IVMaster start button location is not found.\n"
@@ -196,3 +196,4 @@ class MeasureRange():
             ErrorText = tkinter.Text(ErrorWindow, width = 60, height = 30)
             ErrorText.grid(column= 0, row = 0)
             ErrorText.insert(END, self.error_str)
+
