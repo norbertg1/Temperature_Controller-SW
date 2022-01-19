@@ -1,6 +1,9 @@
 # Temperature_Controller-SW
 
-## Packages you need to run the software:
+With this program you can control the [Temperature Controller](https://github.com/norbertg1/Temperature_Controller-HW) hardware from computer through serial port. 
+Also you can set the temperature in range with custom steps and time between.
+
+## Packages you need:
 ``` 
 pip install matplotlib
 pip install tk

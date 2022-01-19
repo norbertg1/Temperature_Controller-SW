@@ -13,18 +13,6 @@ from tkinter import messagebox
 from collections import deque
 from MeasureRange import*
 
-matplotlib.use('TkAgg')
-
-window = tk.Tk()
-window.title("Temperature Controller")
-window.minsize(630,600)
-SetTemp_var     = tk.StringVar()
-SetTemp_entry   = ttk.Entry(window, width = 15, textvariable = SetTemp_var, justify='center')
-serial_port     = serial_communication()        #This is the constructor for serial_port class in Communication.py
-settings        = Settings_(serial_port, window)
-graph           = graphicon(window)
-automatization  = MeasureRange(graph, settings, SetTemp_entry)
-
 class AvgError_classs(): 
     def __init__(self, defsamples):
         self.current_value   = 0
@@ -115,6 +103,12 @@ def on_closing():
 def OpenAutoWindow():
     automatization.OpenMeasureRange()
 
+matplotlib.use('TkAgg')
+
+window = tk.Tk()
+window.title("Temperature Controller")
+window.minsize(630,600)
+
 ports = serial.tools.list_ports.comports()
 devices = []
 for port in sorted(ports):
@@ -122,31 +116,35 @@ for port in sorted(ports):
 
 if not devices: devices.append("N/A")
 
-AvgError   = AvgError_classs(500)
-Port_label = tkinter.Label(window)
-value_inside = tkinter.StringVar(window)
-ChooseSerialMenu = OptionMenu(window, value_inside, *devices )
-setSerialButton = tkinter.Button(window, text = "Open", command = OpenSerial)
-animation = FuncAnimation(graph.figure, graph.update, interval=200)
-ttk.Button(window, text = "Settings", command = OpenSettings).grid(column= 3, row = 0)
-
-Port_label.grid(column= 5, row = 0)
-Port_label.config(text = "Port Error", font= ("default", "12", "bold"), fg="red")
-#tkinter.Label(window, text = "Port OK,", font= ("default", "12", "bold"), fg="green").grid(column= 4, row = 0)
-ttk.Label(window, text = "Target Temperature").grid(column = 0, row = 1)
+SetTemp_var         = tk.StringVar()
+SetTemp_entry       = ttk.Entry(window, width = 15, textvariable = SetTemp_var, justify='center')
+serial_port         = serial_communication()        #This is the constructor for serial_port class in Communication.py
+settings            = Settings_(serial_port, window)
+graph               = graphicon(window)
+automatization      = MeasureRange(graph, settings, SetTemp_entry)
+AvgError            = AvgError_classs(500)
+Port_label          = tkinter.Label(window)
+value_inside        = tkinter.StringVar(window)
+ChooseSerialMenu    = OptionMenu(window, value_inside, *devices )
+setSerialButton     = tkinter.Button(window, text = "Open", command = OpenSerial)
+animation           = FuncAnimation(graph.figure, graph.update, interval=200)
 CurrentTemp_label   = ttk.Label(window, text = None, font= ("default", "24", "bold") )
 PowerPercent_label  = ttk.Label(window, text = None, font= ("default", "16") )
 Voltage_label       = ttk.Label(window, text = None, font= ("default", "12"))
 Amps_label          = ttk.Label(window, text = None, font= ("default", "12"))
 Power_label         = ttk.Label(window, text = None, font= ("default", "12" ))
 AvgError_label      = ttk.Label(window, text = None, font= ("default", "12" ))
-setTempButton   = ttk.Button(window, text = "SET", command = SetTemp)
-AutoMeasure   = ttk.Button(window, text = "Mesure a range", command = OpenAutoWindow)
+setTempButton       = ttk.Button(window, text = "SET", command = SetTemp)
+AutoMeasure         = ttk.Button(window, text = "Mesure a range", command = OpenAutoWindow)
 
+Port_label.config(text = "Port Error", font= ("default", "12", "bold"), fg="red")
+ttk.Button(window, text = "Settings", command = OpenSettings).grid(column= 3, row = 0)
+ttk.Label(window, text = "Target Temperature").grid(column = 0, row = 1)
 SetTemp_entry.grid(column = 0, row = 2)
 AutoMeasure.grid(column= 4, row = 0)
 ChooseSerialMenu.grid(column= 0, row = 0)
 setSerialButton.grid(column= 1, row = 0)
+Port_label.grid(column= 5, row = 0)
 CurrentTemp_label.place(x = 150, y = 40)
 PowerPercent_label.place(x = 180, y = 80 )
 Voltage_label.place(x = 360, y = 30)
@@ -160,6 +158,5 @@ SetTemp_entry.bind("<KP_Enter>", SetTempOnEnter)
 
 animation.event_source.stop()
 window.after(300, ReadCurrentTemp)
-#window.after(1000,automatization.ongoing_measurement)
 window.protocol("WM_DELETE_WINDOW", on_closing)
 window.mainloop()
