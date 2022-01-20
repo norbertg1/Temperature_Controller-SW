@@ -28,6 +28,16 @@ and run
 
 ```pyinstaller --onefile TempControl.py```
 
+# Some pictures from the application
+
+<img src="img/Temperature Controller.jpg" alt=" ">
+
+
+<img src="img/MeasureRange.jpg" alt=" "> 
+<img src="img/Settings.jpg" alt=" "> 
+
+
+
 # Comments
 
 Files: ```start_button_img.py, start_button.png, pic2str.py``` are for controlling our custom made measurement device. Please ignore them also with checkbox "Control IVMaster".
