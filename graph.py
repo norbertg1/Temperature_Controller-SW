@@ -26,6 +26,8 @@ class graphicon():
         plotlays, plotcols = [2], ["red","black"]
         self.lines = []
         ax1 = plt.axes()
+        ax1.set_xlabel("Time [s]")
+        ax1.set_ylabel("Temperature [°C]")
         self.line, = ax1.plot([], [], lw=1)
         width = [1,0.5]
         style = ["solid", "dashed"]

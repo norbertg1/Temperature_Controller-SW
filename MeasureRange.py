@@ -37,7 +37,7 @@ class MeasureRange():
             
             self.status = tkinter.Label(self.MeasureRangeWindow, text = "Not started", font= ("default", "10", "bold"))
             self.time_remaining = tkinter.Label(self.MeasureRangeWindow, text = "", font= ("default", "10"))
-            self.FileStringEntry = tkinter.Entry(self.MeasureRangeWindow, width = 20, textvariable = FileStringVar)
+            self.FileStringEntry = tkinter.Entry(self.MeasureRangeWindow, width = 30, textvariable = FileStringVar)
             self.StartTempEntry = tkinter.Entry(self.MeasureRangeWindow, width = 10, textvariable = StartTempVar)
             self.StepEntry = tkinter.Entry(self.MeasureRangeWindow, width = 10, textvariable = StepSizeVar)
             self.EndTemptEntry = tkinter.Entry(self.MeasureRangeWindow, width = 10, textvariable = EndTempVar)
@@ -60,7 +60,7 @@ class MeasureRange():
             tkinter.Label(self.MeasureRangeWindow, text = "min.").place(x = 300, y = 150)
             tkinter.Button(self.MeasureRangeWindow, text = "Next Step", command = self.NextStep, width = 10).place(x = 220, y = 200)
             
-            self.ControlIVMasterButton.place(x = 170, y = 25)
+            self.ControlIVMasterButton.place(x = 200, y = 25)
             self.status.place(x = 60, y = 240)
             self.time_remaining.place(x = 290, y = 240)
             self.FileStringEntry.place(x = 10, y = 25)
@@ -82,13 +82,16 @@ class MeasureRange():
             else: self.settings.DeviceStatus.status("Device Error", False)
             return None
 
-      def Start(self):
-            print("start")
-            self.CurrentTargetTemp        = float(self.StartTempEntry.get())
+      def get_values_from_text_box(self):
             self.Step                     = float(self.StepEntry.get())
             self.EndTemp                  = float(self.EndTemptEntry.get())
             self.MeasurementLength        = float(self.MeasureLengthEntry.get())
-            self.WaitBeforeMeasurement    = float(self.WaitBeforeMeasurementEntry.get())
+            self.WaitBeforeMeasurement    = float(self.WaitBeforeMeasurementEntry.get())          
+      
+      def Start(self):
+            print("start")
+            self.get_values_from_text_box()
+            self.CurrentTargetTemp        = float(self.StartTempEntry.get())
             self.cnt                      = 0
             if self.CurrentTargetTemp > self.EndTemp and self.Step > 0:
                   self.status.configure(text= "Range setting error", fg= "red")
@@ -103,14 +106,17 @@ class MeasureRange():
             else: 
                   self.stage = -1
                   self.StartStopButton.config(text = "START")
+                  self.status.configure(text= "Stopped", fg= "black")
                   
       def ongoing_measurement(self):
             if self.stage == 0: #Setting up the target temperature.
+                  self.get_values_from_text_box()
                   self.SetTemp(self.CurrentTargetTemp)
                   self.stage = 1
                   self.MaxTempDifference = 0
                   self.CurrentTargetError = 0
             if self.stage == 1: #Waiting before measurement.
+                  self.get_values_from_text_box()
                   self.status.configure(text= "Waiting before measurement", fg= "black")
                   self.time_remaining.configure(text= str(int(self.WaitBeforeMeasurement*60) - self.cnt) + " s") 
                   if self.cnt >= self.WaitBeforeMeasurement*60: 
@@ -121,6 +127,7 @@ class MeasureRange():
                   self.MeasureRangeWindow.after(1000,self.ongoing_measurement)
                   return
             if self.stage == 2: #Waiting for measuring.
+                  self.get_values_from_text_box()
                   self.TargetTempError()
                   self.status.configure(text= "Measuring")
                   self.time_remaining.configure(text= str(int(self.MeasurementLength*60) - self.cnt) + " s")
@@ -133,6 +140,7 @@ class MeasureRange():
                   self.MeasureRangeWindow.after(1000,self.ongoing_measurement)
                   return
             if self.stage == 3: #Finished, moving to next temperature or finishing
+                  self.get_values_from_text_box()
                   if self.CurrentTargetError == 1: self.error_str += self.currenterror_str
                   if self.CurrentTargetTemp == self.EndTemp: 
                         if(self.OverallError == 0): self.status.configure(text= "Finished", fg= "green")
@@ -158,14 +166,6 @@ class MeasureRange():
             self.CheckIVMasterCheckBox()
             if self.IVMasterControlFlag == 1:
                   print("Range measurement. Configuring IVMaster program")
-<<<<<<< HEAD
-                  #pyautogui.click(300, 300)
-                  #pyautogui.moveTo(300, 300, 3)
-                  #pyautogui.click()
-                  #pyautogui.locateOnScreen('start.png')
-                  pyautogui.click('start.png')
-                  sleep(0.01)
-=======
                   byte_data = base64.b64decode(start_button_png)
                   image_data = BytesIO(byte_data)
                   image = Image.open(image_data)
@@ -179,9 +179,9 @@ class MeasureRange():
                         return
                   pyautogui.moveTo(location.x, location.y, 3)
                   pyautogui.click()
->>>>>>> 468f78d5353f158d0abad9b0fbfd51618f7a8a39
-                  pyautogui.write(self.FileStringEntry.get() + str(self.CurrentTargetTemp), interval=0.1)
+                  pyautogui.write(self.FileStringEntry.get() + str(int(self.CurrentTargetTemp)) + "C.txt", interval=0.1)
                   pyautogui.press('Enter')
+                  pyautogui.hotkey('alt', 'tab')
                   pyautogui.hotkey('alt', 'tab')
             
       def NextStep(self):
