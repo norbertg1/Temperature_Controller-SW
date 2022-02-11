@@ -12,4 +12,4 @@ def pic2str(file, functionName):
 
 
 if __name__ == '__main__':
-    pic2str('WhereToClick_buttons/SpectLab_ThreeDots.bmp', 'SpectLab_ThreeDots')
+    pic2str('WhereToClick_buttons/SpectLab_AutoRun.bmp', 'SpectLab_AutoRun')

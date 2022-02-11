@@ -210,37 +210,41 @@ class MeasureRange():
                   SpectLab_Connect  = Image.open(BytesIO(base64.b64decode(WhereToClick_Buttons.SpectLab_connect)))
                   location          = pyautogui.locateCenterOnScreen(SpectLab_Connect, grayscale=True, confidence=0.7)
                   if self.location_error(location) == 1: return
-                  pyautogui.moveTo(location.x, location.y, 3)
+                  pyautogui.moveTo(location.x, location.y, 1)
                   pyautogui.click()
-                  ## Clicking on SpectLab AutoRun/save ##
-                  SpectLab_AutoRunSave    = Image.open(BytesIO(base64.b64decode(WhereToClick_Buttons.SpectLab_AutoRunSave)))                  
-                  location                = pyautogui.locateCenterOnScreen(SpectLab_AutoRunSave, grayscale=True, confidence=0.7)
+                  sleep(1)
+                  pyautogui.press('Enter')
+                  sleep(5)
+                  ## Clicking on SpectLab Run ##
+                  SpectLab_AutoRun    = Image.open(BytesIO(base64.b64decode(WhereToClick_Buttons.SpectLab_AutoRun)))                  
+                  location                = pyautogui.locateCenterOnScreen(SpectLab_AutoRun, grayscale=True, confidence=0.8)
                   if self.location_error(location) == 1: return
-                  pyautogui.moveTo(location.x, location.y, 3)
+                  pyautogui.moveTo(location.x, location.y, 1)
                   pyautogui.click()
                   ## Clicking on Spectlab ThreeDots ##
-                  SpectLab_ThreeDots      = Image.open(BytesIO(base64.b64decode(WhereToClick_Buttons.SpectLab_ThreeDots)))
-                  location                = pyautogui.locateCenterOnScreen(SpectLab_ThreeDots, grayscale=True, confidence=0.7)
-                  if self.location_error(location) == 1: return
-                  pyautogui.moveTo(location.x, location.y, 3)
-                  pyautogui.click()
+                  #SpectLab_ThreeDots      = Image.open(BytesIO(base64.b64decode(WhereToClick_Buttons.SpectLab_ThreeDots)))
+                  #location                = pyautogui.locateCenterOnScreen(SpectLab_ThreeDots, grayscale=True, confidence=0.7)
+                  #if self.location_error(location) == 1: return
+                  #pyautogui.moveTo(location.x, location.y, 3)
+                  #pyautogui.click()
                   ## writing File name ##
-                  pyautogui.write(self.FileStringEntry.get() + str(int(self.CurrentTargetTemp)) + "C.txt", interval=0.1)
-                  pyautogui.press('Enter')
-                  pyautogui.press('Enter')
-                  pyautogui.hotkey('alt', 'tab')
-                  pyautogui.hotkey('alt', 'tab')
+
                   
       def ConfigSpectLab2(self):
             self.CheckSpectLabCheckBox()
             if self.SpectLabControlFlag == 1:
                   print("Range measurement. Saving SpectLab measurement.")
                   ## Clicking on SpectLab Save ##
-                  #SpectLab_Save    = Image.open(BytesIO(base64.b64decode(WhereToClick_Buttons.SpectLab_save)))
-                  #location          = pyautogui.locateCenterOnScreen(SpectLab_Save, grayscale=True, confidence=0.7)
-                  #if self.location_error(location) == 1: return
-                  #pyautogui.moveTo(location.x, location.y, 3)
-                  #pyautogui.click()  
+                  SpectLab_Save    = Image.open(BytesIO(base64.b64decode(WhereToClick_Buttons.SpectLab_save)))
+                  location          = pyautogui.locateCenterOnScreen(SpectLab_Save, grayscale=True, confidence=0.7)
+                  if self.location_error(location) == 1: return
+                  pyautogui.moveTo(location.x, location.y, 3)
+                  pyautogui.click()  
+                  ## Writing file name ##
+                  pyautogui.write(self.FileStringEntry.get() + str(int(self.CurrentTargetTemp)) + "C.txt", interval=0.1)
+                  pyautogui.press('Enter')
+                  pyautogui.hotkey('alt', 'tab')
+                  pyautogui.hotkey('alt', 'tab')
                   ## Clicking on SpectLab disconnect ##
                   SpectLab_Save    = Image.open(BytesIO(base64.b64decode(WhereToClick_Buttons.SpectLab_disconnect)))
                   location          = pyautogui.locateCenterOnScreen(SpectLab_Save, grayscale=True, confidence=0.7)
