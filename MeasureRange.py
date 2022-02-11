@@ -223,22 +223,24 @@ class MeasureRange():
             self.CheckSpectLabCheckBox()
             if self.SpectLabControlFlag == 1:
                   print("Range measurement. Saving SpectLab measurement.")
-                  ## Clicking on SpectLab Save ##
-                  SpectLab_Save    = Image.open(BytesIO(base64.b64decode(WhereToClick_Buttons.SpectLab_save)))
-                  location          = pyautogui.locateCenterOnScreen(SpectLab_Save, grayscale=True, confidence=0.7)
-                  if self.location_error(location) == 1: return
-                  pyautogui.moveTo(location.x, location.y, 1)
-                  pyautogui.click()  
-                  ## Writing file name ##
-                  pyautogui.write(self.FileStringEntry.get() + str(int(self.CurrentTargetTemp)) + "C.txt", interval=0.1)
-                  sleep(1)
-                  pyautogui.press('Enter')
                   ## Clicking on SpectLab disconnect ##
                   SpectLab_Save    = Image.open(BytesIO(base64.b64decode(WhereToClick_Buttons.SpectLab_disconnect)))
                   location          = pyautogui.locateCenterOnScreen(SpectLab_Save, grayscale=False, confidence=0.8)
                   if self.location_error(location) == 1: return
                   pyautogui.moveTo(location.x, location.y, 1)
                   pyautogui.click()
+                  sleep(1)
+                  ## Clicking on SpectLab Save ##
+                  SpectLab_Save    = Image.open(BytesIO(base64.b64decode(WhereToClick_Buttons.SpectLab_save)))
+                  location          = pyautogui.locateCenterOnScreen(SpectLab_Save, grayscale=True, confidence=0.7)
+                  if self.location_error(location) == 1: return
+                  pyautogui.moveTo(location.x, location.y, 1)
+                  pyautogui.click()
+                  sleep(1)
+                  ## Writing file name ##
+                  pyautogui.write(self.FileStringEntry.get() + str(int(self.CurrentTargetTemp)) + "C.txt", interval=0.1)
+                  sleep(1)
+                  pyautogui.press('Enter')
                                   
       def location_error(self, location):
             if location is None: 
