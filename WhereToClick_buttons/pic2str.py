@@ -7,9 +7,9 @@ def pic2str(file, functionName):
     content = '{} = {}\n'.format(functionName, base64.b64encode(pic.read()))
     pic.close()
 
-    with open('start_button_img.py', 'w') as f:
+    with open('WhereToClick_buttons/output_imgtostring.py', 'w') as f:
         f.write(content)
 
 
 if __name__ == '__main__':
-    pic2str('start_button.png', 'start_button_png')
+    pic2str('WhereToClick_buttons/SpectLab_ThreeDots.bmp', 'SpectLab_ThreeDots')
