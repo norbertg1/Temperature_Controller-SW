@@ -6,10 +6,12 @@ import tkinter
 from turtle import color
 from Settings import *
 import pyautogui
-from start_button_img import start_button_png
+import WhereToClick_Buttons
 import base64
 from io import BytesIO
 from PIL import Image, ImageQt
+
+from WhereToClick_buttons.output_imgtostring import SpectLab_ThreeDots
 
 
 class MeasureRange():
@@ -33,7 +35,8 @@ class MeasureRange():
             EndTempVar = tkinter.StringVar(self.MeasureRangeWindow,value='100')
             MeasurementLengthVar = tkinter.StringVar(self.MeasureRangeWindow,value='20')
             WaitBeforeMeasurementVar = tkinter.StringVar(self.MeasureRangeWindow,value='20')
-            self.ControlIVMasterVar = tkinter.IntVar(value=1)
+            self.ControlIVMasterVar = tkinter.IntVar(value=0)
+            self.ControlSpectLabVar = tkinter.IntVar(value=0)
             
             self.status = tkinter.Label(self.MeasureRangeWindow, text = "Not started", font= ("default", "10", "bold"))
             self.time_remaining = tkinter.Label(self.MeasureRangeWindow, text = "", font= ("default", "10"))
@@ -45,6 +48,7 @@ class MeasureRange():
             self.WaitBeforeMeasurementEntry = tkinter.Entry(self.MeasureRangeWindow, width = 10, textvariable = WaitBeforeMeasurementVar)
             self.StartStopButton   = tkinter.Button(self.MeasureRangeWindow, text = "START", command = self.Start, width = 20)
             self.ControlIVMasterButton = tkinter.Checkbutton(self.MeasureRangeWindow, variable=self.ControlIVMasterVar,text="Control IVMaster")
+            self.ControlSpectLabButton = tkinter.Checkbutton(self.MeasureRangeWindow, variable=self.ControlSpectLabVar,text="Control SpectLab")
             
             tkinter.Label(self.MeasureRangeWindow, text = "Name of the file").place(x = 10, y = 0)
             tkinter.Label(self.MeasureRangeWindow, text = "Start Temp.").place(x = 10, y = 55)
@@ -60,7 +64,8 @@ class MeasureRange():
             tkinter.Label(self.MeasureRangeWindow, text = "min.").place(x = 300, y = 150)
             tkinter.Button(self.MeasureRangeWindow, text = "Next Step", command = self.NextStep, width = 10).place(x = 220, y = 200)
             
-            self.ControlIVMasterButton.place(x = 200, y = 25)
+            self.ControlIVMasterButton.place(x = 200, y = 10)
+            self.ControlSpectLabButton.place(x = 200, y = 30)
             self.status.place(x = 60, y = 240)
             self.time_remaining.place(x = 290, y = 240)
             self.FileStringEntry.place(x = 10, y = 25)
@@ -121,6 +126,7 @@ class MeasureRange():
                   self.time_remaining.configure(text= str(int(self.WaitBeforeMeasurement*60) - self.cnt) + " s") 
                   if self.cnt >= self.WaitBeforeMeasurement*60: 
                         self.ConfigIVMASTER()
+                        self.ConfigSpectLab1()
                         self.cnt = 0
                         self.stage = 2
                   self.cnt += 1
@@ -132,6 +138,7 @@ class MeasureRange():
                   self.status.configure(text= "Measuring")
                   self.time_remaining.configure(text= str(int(self.MeasurementLength*60) - self.cnt) + " s")
                   if self.cnt >= self.MeasurementLength*60:
+                        self.ConfigSpectLab2()
                         self.cnt = 0
                         self.stage = 3
                         self.MeasureRangeWindow.after(10,self.ongoing_measurement)
@@ -159,14 +166,19 @@ class MeasureRange():
                   self.MeasureRangeWindow.after(1000,self.ongoing_measurement)
       
       
+
+      
       def CheckIVMasterCheckBox(self):
             self.IVMasterControlFlag = self.ControlIVMasterVar.get()
+            
+      def CheckSpectLabCheckBox(self):
+            self.SpectLabControlFlag = self.ControlSpectLabVar.get()
      
       def ConfigIVMASTER(self):
             self.CheckIVMasterCheckBox()
             if self.IVMasterControlFlag == 1:
-                  print("Range measurement. Configuring IVMaster program")
-                  byte_data = base64.b64decode(start_button_png)
+                  print("Range measurement. Starting IVMaster measurement.")
+                  byte_data = base64.b64decode(WhereToClick_Buttons.IVMaster_start)
                   image_data = BytesIO(byte_data)
                   image = Image.open(image_data)
                   location = pyautogui.locateCenterOnScreen(image, grayscale=True, confidence=0.7)
@@ -183,7 +195,67 @@ class MeasureRange():
                   pyautogui.press('Enter')
                   pyautogui.hotkey('alt', 'tab')
                   pyautogui.hotkey('alt', 'tab')
-            
+      
+      def ConfigSpectLab1(self):
+            self.CheckSpectLabCheckBox()
+            if self.SpectLabControlFlag == 1:
+                  print("Range measurement. Starting SpectLab measurement.")
+                  ## Clicking on SpectLab_new ##
+                  SpectLab_new      = Image.open(BytesIO(base64.b64decode(WhereToClick_Buttons.SpectLab_new)))
+                  location          = pyautogui.locateCenterOnScreen(SpectLab_new, grayscale=True, confidence=0.7)
+                  if self.location_error(location) == 1: return
+                  pyautogui.moveTo(location.x, location.y, 3)
+                  pyautogui.click()
+                  ## Clicking on SpectLab_connect ##
+                  SpectLab_Connect  = Image.open(BytesIO(base64.b64decode(WhereToClick_Buttons.SpectLab_connect)))
+                  location          = pyautogui.locateCenterOnScreen(SpectLab_Connect, grayscale=True, confidence=0.7)
+                  if self.location_error(location) == 1: return
+                  pyautogui.moveTo(location.x, location.y, 3)
+                  pyautogui.click()
+                  ## Clicking on SpectLab AutoRun/save ##
+                  SpectLab_AutoRunSave    = Image.open(BytesIO(base64.b64decode(WhereToClick_Buttons.SpectLab_AutoRunSave)))                  
+                  location                = pyautogui.locateCenterOnScreen(SpectLab_AutoRunSave, grayscale=True, confidence=0.7)
+                  if self.location_error(location) == 1: return
+                  pyautogui.moveTo(location.x, location.y, 3)
+                  pyautogui.click()
+                  ## Clicking on Spectlab ThreeDots ##
+                  SpectLab_ThreeDots      = Image.open(BytesIO(base64.b64decode(WhereToClick_Buttons.SpectLab_ThreeDots)))
+                  location                = pyautogui.locateCenterOnScreen(SpectLab_ThreeDots, grayscale=True, confidence=0.7)
+                  if self.location_error(location) == 1: return
+                  pyautogui.moveTo(location.x, location.y, 3)
+                  pyautogui.click()
+                  ## writing File name ##
+                  pyautogui.write(self.FileStringEntry.get() + str(int(self.CurrentTargetTemp)) + "C.txt", interval=0.1)
+                  pyautogui.press('Enter')
+                  pyautogui.press('Enter')
+                  pyautogui.hotkey('alt', 'tab')
+                  pyautogui.hotkey('alt', 'tab')
+                  
+      def ConfigSpectLab2(self):
+            self.CheckSpectLabCheckBox()
+            if self.SpectLabControlFlag == 1:
+                  print("Range measurement. Saving SpectLab measurement.")
+                  ## Clicking on SpectLab Save ##
+                  #SpectLab_Save    = Image.open(BytesIO(base64.b64decode(WhereToClick_Buttons.SpectLab_save)))
+                  #location          = pyautogui.locateCenterOnScreen(SpectLab_Save, grayscale=True, confidence=0.7)
+                  #if self.location_error(location) == 1: return
+                  #pyautogui.moveTo(location.x, location.y, 3)
+                  #pyautogui.click()  
+                  ## Clicking on SpectLab disconnect ##
+                  SpectLab_Save    = Image.open(BytesIO(base64.b64decode(WhereToClick_Buttons.SpectLab_disconnect)))
+                  location          = pyautogui.locateCenterOnScreen(SpectLab_Save, grayscale=True, confidence=0.7)
+                  if self.location_error(location) == 1: return
+                  pyautogui.moveTo(location.x, location.y, 3)
+                  pyautogui.click()
+                                  
+      def location_error(self, location):
+            if location is None: 
+                  current_time = time.strftime("%H:%M:%S", time.localtime())
+                  self.error_str += current_time + " " + str(self.CurrentTargetTemp) + " IVMaster start button location is not found.\n"
+                  print ("SpectLab button location is not found.")
+                  self.OverallError = 1
+                  return 1
+                  
       def NextStep(self):
             if self.stage > -1 and self.stage < 3: 
                   self.stage += 1
