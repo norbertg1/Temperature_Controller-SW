@@ -183,13 +183,13 @@ class MeasureRange():
             if self.CheckSpectPX5CheckBox() == 1:
                   print("Range measurement. Starting Amptek PX5 measurement.")
                   ## Clicking on Amptek PX5 Erase button ##
-                  PX5_Erase      = Image.open(BytesIO(base64.b64decode(WhereToClick_Buttons.PX5_Erase)))
+                  PX5_Erase         = Image.open(BytesIO(base64.b64decode(WhereToClick_Buttons.PX5_Erase)))
                   location          = pyautogui.locateCenterOnScreen(PX5_Erase, grayscale=True, confidence=0.8)
                   if self.location_error(location) == 1: return
-                  pyautogui.moveTo(location.x, location.y, 3)
+                  pyautogui.moveTo(location.x, location.y, 1)
                   pyautogui.click()
                   ## Clicking on Amptek PX5 Start button ##
-                  PX5_Start      = Image.open(BytesIO(base64.b64decode(WhereToClick_Buttons.PX5_Start)))
+                  PX5_Start         = Image.open(BytesIO(base64.b64decode(WhereToClick_Buttons.PX5_Start)))
                   location          = pyautogui.locateCenterOnScreen(PX5_Start, grayscale=True, confidence=0.8)
                   if self.location_error(location) == 1: return
                   pyautogui.moveTo(location.x, location.y, 1)
@@ -198,15 +198,21 @@ class MeasureRange():
       def ConfigPX5_2(self):
             if self.CheckSpectPX5CheckBox() == 1:
                   print("Range measurement. Saving Amptek PX5 measurement.")
+                  ## Clicking on Amptek PX5 Stop button ##
+                  PX5_Stop         = Image.open(BytesIO(base64.b64decode(WhereToClick_Buttons.PX5_Stop)))
+                  location          = pyautogui.locateCenterOnScreen(PX5_Stop, grayscale=True, confidence=0.8)
+                  if self.location_error(location) == 1: return
+                  pyautogui.moveTo(location.x, location.y, 1)
+                  pyautogui.click()
                   ## Clicking on Amptek PX5 Save button ##
                   PX5_Save      = Image.open(BytesIO(base64.b64decode(WhereToClick_Buttons.PX5_Save)))
-                  location          = pyautogui.locateCenterOnScreen(PX5_Save, grayscale=True, confidence=0.7)
+                  location          = pyautogui.locateCenterOnScreen(PX5_Save, grayscale=True, confidence=0.8)
                   if self.location_error(location) == 1: return
-                  pyautogui.moveTo(location.x, location.y, 3)
+                  pyautogui.moveTo(location.x, location.y, 1)
                   pyautogui.click()
                   sleep(1)
                   ## Writing file name ##
-                  pyautogui.write(self.FileStringEntry.get() + str(int(self.CurrentTargetTemp)) + "C.txt", interval=0.1)
+                  pyautogui.write(self.FileStringEntry.get() + str(int(self.CurrentTargetTemp)) + "C.mca", interval=0.1)
                   sleep(1)
                   pyautogui.press('Enter')
                   
