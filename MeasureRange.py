@@ -24,7 +24,7 @@ class MeasureRange():
       def OpenMeasureRange(self):
             self.MeasureRangeWindow = Toplevel()
             self.MeasureRangeWindow.title("MeasureRange")
-            self.MeasureRangeWindow.minsize(350,280)
+            self.MeasureRangeWindow.minsize(370,280)
             self.MeasureRangeWindow.resizable(False, False)
             FileStringVar = tkinter.StringVar(self.MeasureRangeWindow,value='default text')
             StartTempVar = tkinter.StringVar(self.MeasureRangeWindow,value='20')
@@ -34,10 +34,11 @@ class MeasureRange():
             WaitBeforeMeasurementVar = tkinter.StringVar(self.MeasureRangeWindow,value='20')
             self.ControlIVMasterVar = tkinter.IntVar(value=0)
             self.ControlSpectLabVar = tkinter.IntVar(value=0)
-            
+            self.ControlPX5Var = tkinter.IntVar(value=0)
+
             self.status = tkinter.Label(self.MeasureRangeWindow, text = "Not started", font= ("default", "10", "bold"))
             self.time_remaining = tkinter.Label(self.MeasureRangeWindow, text = "", font= ("default", "10"))
-            self.FileStringEntry = tkinter.Entry(self.MeasureRangeWindow, width = 30, textvariable = FileStringVar)
+            self.FileStringEntry = tkinter.Entry(self.MeasureRangeWindow, width = 24, textvariable = FileStringVar)
             self.StartTempEntry = tkinter.Entry(self.MeasureRangeWindow, width = 10, textvariable = StartTempVar)
             self.StepEntry = tkinter.Entry(self.MeasureRangeWindow, width = 10, textvariable = StepSizeVar)
             self.EndTemptEntry = tkinter.Entry(self.MeasureRangeWindow, width = 10, textvariable = EndTempVar)
@@ -46,32 +47,34 @@ class MeasureRange():
             self.StartStopButton   = tkinter.Button(self.MeasureRangeWindow, text = "START", command = self.Start, width = 20)
             self.ControlIVMasterButton = tkinter.Checkbutton(self.MeasureRangeWindow, variable=self.ControlIVMasterVar,text="Control IVMaster")
             self.ControlSpectLabButton = tkinter.Checkbutton(self.MeasureRangeWindow, variable=self.ControlSpectLabVar,text="Control SpectLab")
+            self.ControlPX5 = tkinter.Checkbutton(self.MeasureRangeWindow, variable=self.ControlPX5Var,text="Control Amptek PX5")
             
             tkinter.Label(self.MeasureRangeWindow, text = "Name of the file").place(x = 10, y = 0)
-            tkinter.Label(self.MeasureRangeWindow, text = "Start Temp.").place(x = 10, y = 55)
-            tkinter.Label(self.MeasureRangeWindow, text = "Step size").place(x = 130, y = 55)
-            tkinter.Label(self.MeasureRangeWindow, text = "End Temp.").place(x = 230, y = 55)
-            tkinter.Label(self.MeasureRangeWindow, text = "Measurement Length").place(x = 10, y = 125)
-            tkinter.Label(self.MeasureRangeWindow, text = "Wait Before measurement").place(x = 170, y = 125)
-            tkinter.Label(self.MeasureRangeWindow, text = "Status:").place(x = 10, y = 240)
-            tkinter.Label(self.MeasureRangeWindow, text = "°C").place(x =100, y = 80)
-            tkinter.Label(self.MeasureRangeWindow, text = "°C").place(x = 210, y = 80)
-            tkinter.Label(self.MeasureRangeWindow, text = "°C").place(x = 320, y = 80)
-            tkinter.Label(self.MeasureRangeWindow, text = "min.").place(x = 130, y = 150)
-            tkinter.Label(self.MeasureRangeWindow, text = "min.").place(x = 300, y = 150)
-            tkinter.Button(self.MeasureRangeWindow, text = "Next Step", command = self.NextStep, width = 10).place(x = 220, y = 200)
+            tkinter.Label(self.MeasureRangeWindow, text = "Start Temp.").place(x = 10, y = 65)
+            tkinter.Label(self.MeasureRangeWindow, text = "Step size").place(x = 140, y = 65)
+            tkinter.Label(self.MeasureRangeWindow, text = "End Temp.").place(x = 240, y = 65)
+            tkinter.Label(self.MeasureRangeWindow, text = "Measurement Length").place(x = 10, y = 135)
+            tkinter.Label(self.MeasureRangeWindow, text = "Wait Before measurement").place(x = 170, y = 135)
+            tkinter.Label(self.MeasureRangeWindow, text = "Status:").place(x = 10, y = 250)
+            tkinter.Label(self.MeasureRangeWindow, text = "°C").place(x =100, y = 90)
+            tkinter.Label(self.MeasureRangeWindow, text = "°C").place(x = 220, y = 90)
+            tkinter.Label(self.MeasureRangeWindow, text = "°C").place(x = 330, y = 90)
+            tkinter.Label(self.MeasureRangeWindow, text = "min.").place(x = 130, y = 160)
+            tkinter.Label(self.MeasureRangeWindow, text = "min.").place(x = 300, y = 160)
+            tkinter.Button(self.MeasureRangeWindow, text = "Next Step", command = self.NextStep, width = 10).place(x = 220, y = 210)
             
-            self.ControlIVMasterButton.place(x = 200, y = 10)
-            self.ControlSpectLabButton.place(x = 200, y = 30)
-            self.status.place(x = 60, y = 240)
-            self.time_remaining.place(x = 290, y = 240)
+            self.ControlIVMasterButton.place(x = 210, y = 0)
+            self.ControlSpectLabButton.place(x = 210, y = 20)
+            self.ControlPX5.place(x = 210, y = 40)
+            self.status.place(x = 60, y = 250)
+            self.time_remaining.place(x = 290, y = 250)
             self.FileStringEntry.place(x = 10, y = 25)
-            self.StartTempEntry.place(x = 10, y = 80)
-            self.StepEntry.place(x = 120, y = 80)
-            self.EndTemptEntry.place(x = 230, y = 80)
-            self.MeasureLengthEntry.place(x = 40, y = 150)
-            self.WaitBeforeMeasurementEntry.place(x = 210, y = 150)
-            self.StartStopButton.place(x = 20, y = 200)
+            self.StartTempEntry.place(x = 10, y = 90)
+            self.StepEntry.place(x = 130, y = 90)
+            self.EndTemptEntry.place(x = 240, y = 90)
+            self.MeasureLengthEntry.place(x = 40, y = 160)
+            self.WaitBeforeMeasurementEntry.place(x = 210, y = 160)
+            self.StartStopButton.place(x = 20, y = 210)
 
 
       def SetTemp(self, value):
@@ -124,6 +127,7 @@ class MeasureRange():
                   if self.cnt >= self.WaitBeforeMeasurement*60: 
                         self.ConfigIVMASTER()
                         self.ConfigSpectLab1()
+                        self.ConfigPX5_1()
                         self.cnt = 0
                         self.stage = 2
                   self.cnt += 1
@@ -136,6 +140,7 @@ class MeasureRange():
                   self.time_remaining.configure(text= str(int(self.MeasurementLength*60) - self.cnt) + " s")
                   if self.cnt >= self.MeasurementLength*60:
                         self.ConfigSpectLab2()
+                        self.ConfigPX5_2()
                         self.cnt = 0
                         self.stage = 3
                         self.MeasureRangeWindow.after(10,self.ongoing_measurement)
@@ -166,14 +171,47 @@ class MeasureRange():
 
       
       def CheckIVMasterCheckBox(self):
-            self.IVMasterControlFlag = self.ControlIVMasterVar.get()
+            return self.ControlIVMasterVar.get()
             
       def CheckSpectLabCheckBox(self):
-            self.SpectLabControlFlag = self.ControlSpectLabVar.get()
-     
+            return self.ControlSpectLabVar.get()
+      
+      def CheckSpectPX5CheckBox(self):
+            return self.ControlPX5Var.get()
+      
+      def ConfigPX5_1(self):
+            if self.CheckSpectPX5CheckBox() == 1:
+                  print("Range measurement. Starting Amptek PX5 measurement.")
+                  ## Clicking on Amptek PX5 Erase button ##
+                  PX5_Erase      = Image.open(BytesIO(base64.b64decode(WhereToClick_Buttons.PX5_Erase)))
+                  location          = pyautogui.locateCenterOnScreen(PX5_Erase, grayscale=True, confidence=0.8)
+                  if self.location_error(location) == 1: return
+                  pyautogui.moveTo(location.x, location.y, 3)
+                  pyautogui.click()
+                  ## Clicking on Amptek PX5 Start button ##
+                  PX5_Start      = Image.open(BytesIO(base64.b64decode(WhereToClick_Buttons.PX5_Start)))
+                  location          = pyautogui.locateCenterOnScreen(PX5_Start, grayscale=True, confidence=0.8)
+                  if self.location_error(location) == 1: return
+                  pyautogui.moveTo(location.x, location.y, 1)
+                  pyautogui.click()
+
+      def ConfigPX5_2(self):
+            if self.CheckSpectPX5CheckBox() == 1:
+                  print("Range measurement. Saving Amptek PX5 measurement.")
+                  ## Clicking on Amptek PX5 Save button ##
+                  PX5_Save      = Image.open(BytesIO(base64.b64decode(WhereToClick_Buttons.PX5_Save)))
+                  location          = pyautogui.locateCenterOnScreen(PX5_Save, grayscale=True, confidence=0.7)
+                  if self.location_error(location) == 1: return
+                  pyautogui.moveTo(location.x, location.y, 3)
+                  pyautogui.click()
+                  sleep(1)
+                  ## Writing file name ##
+                  pyautogui.write(self.FileStringEntry.get() + str(int(self.CurrentTargetTemp)) + "C.txt", interval=0.1)
+                  sleep(1)
+                  pyautogui.press('Enter')
+                  
       def ConfigIVMASTER(self):
-            self.CheckIVMasterCheckBox()
-            if self.IVMasterControlFlag == 1:
+            if self.CheckIVMasterCheckBox() == 1:
                   print("Range measurement. Starting IVMaster measurement.")
                   byte_data = base64.b64decode(WhereToClick_Buttons.IVMaster_start)
                   image_data = BytesIO(byte_data)
@@ -194,8 +232,7 @@ class MeasureRange():
                   pyautogui.hotkey('alt', 'tab')
       
       def ConfigSpectLab1(self):
-            self.CheckSpectLabCheckBox()
-            if self.SpectLabControlFlag == 1:
+            if self.CheckSpectLabCheckBox() == 1:
                   print("Range measurement. Starting SpectLab measurement.")
                   ## Clicking on SpectLab_new ##
                   SpectLab_new      = Image.open(BytesIO(base64.b64decode(WhereToClick_Buttons.SpectLab_new)))
@@ -220,8 +257,7 @@ class MeasureRange():
                   pyautogui.click()
                   
       def ConfigSpectLab2(self):
-            self.CheckSpectLabCheckBox()
-            if self.SpectLabControlFlag == 1:
+            if self.CheckSpectLabCheckBox() == 1:
                   print("Range measurement. Saving SpectLab measurement.")
                   ## Clicking on SpectLab disconnect ##
                   SpectLab_Save    = Image.open(BytesIO(base64.b64decode(WhereToClick_Buttons.SpectLab_disconnect)))
