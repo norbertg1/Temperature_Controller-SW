@@ -1,7 +1,7 @@
 # Temperature_Controller-SW
 
-With this program you can control the [Temperature Controller](https://github.com/norbertg1/Temperature_Controller-HW) hardware from computer through serial port. 
-Also you can set the temperature in range with custom steps and time between.
+With this PC program you can control the [Temperature Controller hardware](https://github.com/norbertg1/Temperature_Controller-HW) hardware from computer through serial port. 
+Also you can set the temperature in range measurement with custom steps and time between.
 
 ## Packages you need:
 ``` 
